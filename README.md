@@ -11,26 +11,26 @@ This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks 1
 
 macOS example using `curl`:
 ```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 macOS example using `wget`:
 ```
-wget https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-darwin-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-darwin-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 Linux x86-architecture example using `curl`:
 ```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Linux x86-architecture example using `wget`:
 ```
-wget https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-linux-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/latest/download/oc-ibm_pak-linux-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Retrieve the latest public keys (example with wget):
