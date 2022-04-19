@@ -4,6 +4,10 @@ This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks 1
 
 ## Download and verify software
 
+There are two ways to obtain the plugin
+* [Github Release](#download-from-github-release)
+* [Container image](#download-from-ibm-container-registry)
+
 ### Download from github release
 
 1. Download the gzipped tar archive for your OS from the assets in [releases](https://github.com/IBM/ibm-pak-plugin/releases)
@@ -51,14 +55,25 @@ The following table shows the mapping between container image TAG and the plugin
 |---------------|----------------|
 | 1.0.0-alpha.0 | v1.0.0-alpha.0 |
 
-The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). Choose the Image tag from the above table and use that as the value of TAG below.
+The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). Choose the Image tag from the above table. For example,
+
+1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:TAG - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:1.0.0-alpha.0 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
 ``` 
+
+2. If you podman:
+
+```
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:1.0.0-alpha.0 - )
+podman cp $id:/ibm-pak-plugin plugin-dir
+podman rm -v $id
+cd plugin-dir
+```
 
 ### Check Certificate/Key Validity
 
@@ -136,18 +151,38 @@ Should see a message that contains:
 1. Download and install [oc](https://docs.openshift.com/container-platform/4.8/cli_reference/openshift_cli/getting-started-cli.html).
 2. Download the plugin binary tgz from [releases](https://github.com/IBM/ibm-pak-plugin/releases).
 3. Extract and copy to executable PATH.
+  
+NOTE:
+
+- While copying, the destination name should be `oc-ibm_pak` and cannot be changed.
+- On Mac before copying oc-ibm_pak-darwin-amd64 to /usr/local/bin/oc-ibm_pak refer to [For macOS Catalina users](#for-macos-catalina-users)
+- Plugin determines the command path that it will implement based on its filename.
+- If /usrlocal/bin is not accessible then place it in an accessible folder and put that folder in PATH
+
+For example on Mac,
 
 ```bash
 $ tar -xvf oc-ibm_pak-darwin-amd64.tar.gz
 $ cp oc-ibm_pak-darwin-amd64 /usr/local/bin/oc-ibm_pak
 ```
 
-NOTE:
-
-- While copying, the destination name should be `oc-ibm_pak` and cannot be changed.
-- Plugin determines the command path that it will implement based on its filename.
-- If /usrlocal/bin is not accessible then place it in an accessible folder and put that folder in PATH
 4. See accompanying LICENSE file for the usage.
+
+### For macOS Catalina users
+
+Users on macOS Catalina might be prompted that `oc-ibm_pak-darwin-amd64` is not a trusted application. There are two ways to get around this:
+
+- Open Finder, control-click  the application `oc-ibm_pak-darwin-amd64`, choose **Open** from the menu, and then click **Open** in the dialog that appears. Enter your admin name and password to open the app if promoted.
+
+- Enable developer-mode for your terminal window, which will allow everything. Make sure you are OK with this approach:
+  -  Open Terminal, and enter:
+       ```console
+       ❯ spctl developer-mode enable-terminal 
+      ```
+  - Go to System Preferences -> Security & Privacy -> Privacy Tab -> Developer Tools -> Terminal : Enable
+  - Restart all terminals
+
+_See https://support.apple.com/en-ca/HT202491 for more information_
 ### Usage
 
 ```bash
@@ -202,8 +237,9 @@ oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 
 Complete the following steps to authenticate your registries:
 
-You must run the following command to configure credentials for all target registries that require authentication. Run the command separately for each registry:
+You must run the following command to configure credentials for all target registries that require authentication. Run the command separately for each registry. There are two ways to do that as outlined below, Podman and Docker. The `TARGET_REGISTRY` in the below commands refers to a container registry where you want to mirror your images. The Openshift cluster should have access to this `TARGET_REGISTRY` so that it can pull images from this registry when you [install the catalog](#launch-command-install-a-catalog)
 
+ 1. `Podman`:
 ```
 export REGISTRY_AUTH_FILE=<path to the file which will store the auth credentials generated on podman login>
 podman login cp.icr.io
@@ -212,13 +248,30 @@ podman login <TARGET_REGISTRY>
 
 For example, if you export `REGISTRY_AUTH_FILE=~/.ibm-pak/auth.json`, then after performing podman login, you can see that the file is populated with registry credentials.
 
+
+2. `Docker`:
 If you use `docker login`, the authentication file is typically located at `$HOME/.docker/config.json` on Linux or `%USERPROFILE%/.docker/config.json` on Windows. After docker login you should export `REGISTRY_AUTH_FILE` to point to that location. For example in Linux you can issue the following command:
 
 ```
+docker login cp.icr.io
+docker login <TARGET_REGISTRY>
 export REGISTRY_AUTH_FILE=$HOME/.docker/config.json
 ```
 
-#### Generate Command: Mirror To Registry
+#### Generate Command
+
+
+There are two scenarios:
+
+1. Bastion Host -  A bastion server is a device that has access to both the public internet and the local intranet where a local registry and Red Hat OpenShift Container Platform clusters reside. Using the bastion server, you can replicate your images through the bastion server directly to the local, intranet registry (the TARGET_REGISTRY) behind the firewall. 
+
+Follow the [Generate Command: Mirror To Registry](#generate-command-mirror-to-registry) to complete this scenario
+
+2. FileSystem - You can mirror the images to a local filesystem on a hard disk drive that can be connected to a compute device external to your firewall to download the images. This portable storage can then be connected to a device behind the firewall so that the images can be loaded to the local, intranet registry (the TARGET_REGISTRY)
+
+Follow the [Generate Command: Mirror To Filesystem And Then Registry](#generate-command-mirror-to-filesystem-and-then-registry) to complete this scenario
+
+##### Generate Command: Mirror To Registry
 
 This example generates the `images-mapping.txt` file that can be used with `oc image mirror`.
 
@@ -227,9 +280,9 @@ export TARGET_REGISTRY=mytargetregistry.com
 oc ibm-pak generate mirror-manifests $CASE_NAME $TARGET_REGISTRY --version $CASE_VERSION
 oc image mirror -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt  -a $REGISTRY_AUTH_FILE --filter-by-os=.* --insecure --skip-multiple-scopes --max-per-registry=1
 ```
-#### Generate Command: Mirror To Filesystem And Then Registry
+##### Generate Command: Mirror To Filesystem And Then Registry
 
-This example generates the `images-mapping-to-filesystem.txt` and `images-mapping-from-filesystem.txt` files that can be used with `oc image mirror`. This enables the ability to mirror images to the filesystem (into the `v2` direrectory), manually copy the filesystem contents to another machine behind the customer's firewall, and then mirror from the filesystem into the final regsitry used by the cluster.
+This example generates the `images-mapping-to-filesystem.txt` and `images-mapping-from-filesystem.txt` files that can be used with `oc image mirror`. This enables the ability to mirror images to the filesystem (into the `v2` directory), manually copy the filesystem contents to another machine behind the customer's firewall, and then mirror from the filesystem into the final regsitry used by the cluster.
 
 ```bash
 oc ibm-pak generate mirror-manifests $CASE_NAME file://local --version $CASE_VERSION --final-registry $TARGET_REGISTRY
@@ -247,23 +300,6 @@ This example uses the lauch capability to initiate the install-catalog action fo
 ```bash
 oc ibm-pak launch --case ~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION/$CASE_NAME-$CASE_VERSION.tgz --action install-catalog --inventory ibmCommonServiceOperatorSetup --namespace foo --args "--registry $TARGET_REGISTRY"
 ```
-
-### For macOS Catalina users
-
-Users on macOS Catalina might be prompted that `oc-ibm_pak-darwin-amd64` is not a trusted application. There are two ways to get around this:
-
-- Open Finder, control-click  the application `oc-ibm_pak-darwin-amd64`, choose **Open** from the menu, and then click **Open** in the dialog that appears. Enter your admin name and password to open the app if promoted.
-
-- Enable developer-mode for your terminal window, which will allow everything. Make sure you are OK with this approach:
-  -  Open Terminal, and enter:
-       ```console
-       ❯ spctl developer-mode enable-terminal 
-      ```
-  - Go to System Preferences -> Security & Privacy -> Privacy Tab -> Developer Tools -> Terminal : Enable
-  - Restart all terminals
-
-_See https://support.apple.com/en-ca/HT202491 for more information_
-
 ## Support
 
 To report an issue or get help please visit https://www.ibm.com/docs/en/cpfs?topic=support-opening-case
