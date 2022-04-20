@@ -208,8 +208,8 @@ NOTE:
 For example on Mac,
 
 ```bash
-$ tar -xvf oc-ibm_pak-darwin-amd64.tar.gz
-$ cp oc-ibm_pak-darwin-amd64 /usr/local/bin/oc-ibm_pak
+tar -xvf oc-ibm_pak-darwin-amd64.tar.gz
+cp oc-ibm_pak-darwin-amd64 /usr/local/bin/oc-ibm_pak
 ```
 
 
@@ -260,7 +260,7 @@ export CASE_VERSION=1.13.0
 oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 ```
 
-The will create a directory `~/.ibm-pak` and downloaded the CASE under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION`. We call `~/.ibm-pak` as the plugin root or home directory.
+This will create a directory `~/.ibm-pak` and downloaded the CASE under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION`. We call `~/.ibm-pak` as the plugin root or home directory.
 You can change the plugin's root directory by exporting IBMPAK_HOME environment variable.
 
 ## Generate Mirror Manifests
