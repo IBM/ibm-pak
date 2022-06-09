@@ -305,7 +305,7 @@ If you are following the `Filesystem` path then issue the below command to gener
 oc ibm-pak generate mirror-manifests \
     $CASE_NAME \
     file://local \
-    --version $CASE_VERSION \ 
+    --version $CASE_VERSION \
     --final-registry $TARGET_REGISTRY
 ```
 
@@ -387,7 +387,7 @@ oc image mirror \
   -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping-from-filesystem.txt \
   -a $REGISTRY_AUTH_FILE \
   --from-dir=${v2_dir} \
-  --filter-by-os ‘.*’ \
+  --filter-by-os '.*' \
   --insecure \
   --skip-multiple-scopes \
   --max-per-registry=1
