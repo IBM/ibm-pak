@@ -16,6 +16,7 @@
       - [Verify that the intermediate certificate is still active:](#verify-that-the-intermediate-certificate-is-still-active)
     - [Verify Archive](#verify-archive)
   - [Install](#install)
+  - [Configure the locale - Optional step](#configure-the-locale---optional-step)
   - [Download the CASE](#download-the-case)
   - [Generate Mirror Manifests](#generate-mirror-manifests)
     - [Bastion Host path](#bastion-host-path)
@@ -63,26 +64,26 @@ There are two ways to obtain the plugin
 
 macOS example using `curl`:
 ```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 macOS example using `wget`:
 ```
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-darwin-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 Linux x86-architecture example using `curl`:
 ```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Linux x86-architecture example using `wget`:
 ```
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0-alpha.0/oc-ibm_pak-linux-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-linux-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.0.0/oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Retrieve the latest public keys (example with wget):
@@ -101,6 +102,7 @@ The following table shows the mapping between container image TAG and the plugin
 
 | Image tag     | Plugin version |
 |---------------|----------------|
+| 1.0.0         | v1.0.0         |
 | 1.0.0-alpha.0 | v1.0.0-alpha.0 |
 
 The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). Choose the Image tag from the above table. For example,
@@ -108,7 +110,7 @@ The following command will create a container and copy the plug-ins for all the 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:1.0.0-alpha.0 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:1.0.0 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -117,7 +119,7 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:1.0.0-alpha.0 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:1.0.0 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
@@ -239,16 +241,24 @@ Flags:
 Use "oc ibm-pak [command] --help" for more information about a command.
 
 Environment Variables:
-  IBMPAK_HOME                     the directory path where all plugin results will be saved (default "plugin home directory")
-  IBMPAK_HTTP_TIMEOUT             Overrides the default HTTP timeout value used in client calls to external servers. Measured in seconds (default "10")
-  IBMPAK_LAUNCH_SKIP_PREREQ_CHECK when set to true, will skip checking prerequisites in the launch framework (default "false")
-  IBMPAK_RESOLVE_DEPENDENCIES     when set to false, no CASE references will be resolved (default "true")
+  IBMPAK_HOME                     the directory path where all plugin results will be saved (default "user's home directory")
   IBMPAK_TOLERANCE_RETRY          when set to false, launch script execution failure will not be retried
                                   when set to true, launch script execution failures will be retried without the --tolerance flag (default "true")
+  IBMPAK_RESOLVE_DEPENDENCIES     when set to false, no CASE references will be resolved (default "true")
+  IBMPAK_LAUNCH_SKIP_PREREQ_CHECK when set to true, will skip checking prerequisites in the launch framework (default "false")
+  IBMPAK_HTTP_TIMEOUT             Overrides the default HTTP timeout value used in client calls to external servers. Measured in seconds (default "10")
   HTTPS_PROXY or https_proxy      the URL of a HTTPS proxy (e.g. https://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
   HTTP_PROXY or http_proxy        the URL of a HTTP proxy (e.g. http://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
 ```
 
+## Configure the locale - Optional step
+
+The plug-in can detect the locale of your environment and provide textual helps and messages accordingly. You can optionally set the locale by running the following command:
+
+```sh
+oc ibm-pak config locale -l LOCALE
+```
+where LOCALE can be one of de_DE, en_US, es_ES, fr_FR, it_IT, ja_JP, ko_KR, pt_BR, zh_Hans, zh_Hant.
 
 ## Download the CASE
 
@@ -256,7 +266,7 @@ Download the "top level" CASE and all of its direct and transitive dependencies.
 
 ```bash
 export CASE_NAME=ibm-cp-common-services
-export CASE_VERSION=1.13.0
+export CASE_VERSION=1.15.0
 oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 ```
 
@@ -292,7 +302,11 @@ If you are following the `Filesystem` path then issue the below command to gener
 * `image-content-source-policy.yaml`
 
 ```bash
-oc ibm-pak generate mirror-manifests $CASE_NAME file://local --version $CASE_VERSION --final-registry $TARGET_REGISTRY
+oc ibm-pak generate mirror-manifests \
+    $CASE_NAME \
+    file://local \
+    --version $CASE_VERSION \
+    --final-registry $TARGET_REGISTRY
 ```
 
 If you do not know the value of the final registry where the images will be mirrored, you can provide a placeholder value of TARGET_REGISTRY. For example: `oc ibm-pak generate mirror-manifests $CASE_NAME file://cpfs --version $CASE_VERSION --final-registry TARGET_REGISTRY`. Note that TARGET_REGISTRY used without any environment variable expansion is just a plain string that you will replace later with the actual image registry URL when it is known to you.
@@ -333,7 +347,13 @@ If you are following the `Bastion Host` path then issue the below command to mir
 
 ```bash
 export TARGET_REGISTRY=mytargetregistry.com
-oc image mirror -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt  -a $REGISTRY_AUTH_FILE --filter-by-os=.* --insecure --skip-multiple-scopes --max-per-registry=1
+oc image mirror \
+  -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt \
+  --filter-by-os '.*'  \
+  -a $REGISTRY_AUTH_FILE \
+  --insecure  \
+  --skip-multiple-scopes \
+  --max-per-registry=1
 ```
 
 ### Filesystem path
@@ -341,7 +361,13 @@ oc image mirror -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mappin
 If you are following the `Filesystem` path then issue the below command to mirror the images to your filesystem first.
 
 ```bash
-oc image mirror -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping-to-filesystem.txt -a $REGISTRY_AUTH_FILE --filter-by-os=.* --insecure --skip-multiple-scopes --max-per-registry=1
+oc image mirror \
+  -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping-to-filesystem.txt \
+  --filter-by-os '.*' \
+  -a $REGISTRY_AUTH_FILE \
+  --insecure \
+  --skip-multiple-scopes \
+  --max-per-registry=1
 ```
 
 This will create a v2 folder in the current directory where all the images are copied. For example, in [the previous section](#filesystem-path) if provided file://local as input during generate mirror-manifests then the preceding command will create a subdirectory local under v2 and copy the images under it.
@@ -357,7 +383,14 @@ On your another machine where you copied all the above files, issue the below co
 **NOTE** - If you used the placeholder value of TARGET_REGISTRY as a parameter to --final-registry at the time of [generating mirror manifests](), then before running the following command, find and replace the placeholder value of TARGET_REGISTRY in the file, images-mapping-from-filesystem.txt, with the actual registry where you want to mirror the images. For example, if you want to mirror images to myregistry.com/mynamespace then replace TARGET_REGISTRY with myregistry.com/mynamespace.
 
 ```bash
-oc image mirror -f images-mapping-from-filesystem.txt -a $REGISTRY_AUTH_FILE --from-dir=${v2_dir}  --filter-by-os '.*' --insecure  --skip-multiple-scopes --max-per-registry=1
+oc image mirror \
+  -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping-from-filesystem.txt \
+  -a $REGISTRY_AUTH_FILE \
+  --from-dir=${v2_dir} \
+  --filter-by-os '.*' \
+  --insecure \
+  --skip-multiple-scopes \
+  --max-per-registry=1
 ```
 
 `$v2_dir` refers to the parent directory on the file system where the v2 directory was copied to.
@@ -403,7 +436,15 @@ Issue the following command to initiate the install-catalog action for the top l
 
 ```bash
 export NAMESPACE=ibm-common-services
-oc ibm-pak launch --case ~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION/$CASE_NAME-$CASE_VERSION.tgz --action install-catalog --inventory ibmCommonServiceOperatorSetup --namespace $NAMESPACE --args "--registry $TARGET_REGISTRY"
+export CASE_INVENTORY_SETUP=ibmCommonServiceOperatorSetup
+oc ibm-pak launch \
+$CASE_NAME \
+  --version $CASE_VERSION \
+  --action install-catalog \
+  --inventory $CASE_INVENTORY_SETUP \
+  --namespace $NAMESPACE \
+  --args "--registry $TARGET_REGISTRY --recursive \
+  --inputDir ~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION"
 ```
 Provide an inventory based on the CASE you are installing. We have been referring to `ibm-cp-common-services` hence we used `ibmCommonServiceOperatorSetup` as inventory.
 ## For macOS Catalina users
