@@ -102,6 +102,7 @@ The following table shows the mapping between container image TAG and the plugin
 
 | Image tag     | Plugin version |
 |---------------|----------------|
+| 1.1.0         | v1.1.0         |
 | 1.0.0         | v1.0.0         |
 | 1.0.0-alpha.0 | v1.0.0-alpha.0 |
 
