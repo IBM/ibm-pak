@@ -86,11 +86,24 @@ wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-l
 wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
-Retrieve the latest public keys (example with wget):
+Windows example (from PowerShell) using `curl`:
+```
+curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-windows-amd64.tar.gz -o oc-ibm_pak-windows-amd64.tar.gz
+curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-windows-amd64.tar.gz.sig -o oc-ibm_pak-windows-amd64.tar.gz.sig
+```
+
+Retrieve the latest public keys for macOS/Linux (example with wget):
 ```
 wget https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin.pem
 wget https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain0.pem
 wget https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain1.pem
+```
+
+Retrieve the latest public keys for windows (example with curl):
+```
+curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin.pem -o ibm-pak-plugin.pem
+curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain0.pem -o ibm-pak-plugin-chain0.pem
+curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain1.pem -o ibm-pak-plugin-chain1.pem
 ```
 
 
@@ -129,6 +142,7 @@ cd plugin-dir
 ### Check Certificate/Key Validity
 
 #### Verify that the certificate/key is owned by IBM:
+Note: On windows, run below commands from Git Bash
 
 ```
 openssl x509 -inform pem -in ibm-pak-plugin.pem -noout -text
@@ -203,9 +217,10 @@ Should see a message that contains:
   
 NOTE:
 
-- While copying, the destination name should be `oc-ibm_pak` and cannot be changed.
+- While copying, the destination name should be `oc-ibm_pak` (On windows, name should be `oc-ibm_pak.exe`) and cannot be changed.
 - On Mac before copying oc-ibm_pak-darwin-amd64 to /usr/local/bin/oc-ibm_pak or any directory in your PATH, refer to [For macOS Catalina users](#for-macos-catalina-users)
 - If /usrlocal/bin is not accessible then place it in an accessible folder and put that folder in PATH
+- On windows, copy oc-ibm_pak-windows-amd64 to $HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe or any directory and add this path to PATH environment variable.
 - See accompanying LICENSE file obtained on extracting for the allowed usage.
 
 For example on Mac,
@@ -213,6 +228,13 @@ For example on Mac,
 ```bash
 tar -xvf oc-ibm_pak-darwin-amd64.tar.gz
 cp oc-ibm_pak-darwin-amd64 /usr/local/bin/oc-ibm_pak
+```
+
+For example on Windows (from PowerShell),
+
+```bash
+tar -xvf oc-ibm_pak-windows-amd64.tar.gz
+Copy-Item oc-ibm_pak-windows-amd64 $HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe
 ```
 
 
