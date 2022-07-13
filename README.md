@@ -35,7 +35,7 @@
 
 # Overview
 
-This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks 1.0 (Tech preview) via its github releases. The plugin streamlines the deployment of IBM CloudPaks in a disconnected environment which was done earlier using [cloudctl] (https://github.com/IBM/cloud-pak-cli).
+This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks via its github releases. The plugin streamlines the deployment of IBM CloudPaks in a disconnected environment which was done earlier using [cloudctl] (https://github.com/IBM/cloud-pak-cli).
 
 ## Prerequisites
 
