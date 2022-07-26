@@ -116,7 +116,7 @@ The following command will create a container and copy the plug-ins for all the 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:1.2.0 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.0 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -125,7 +125,7 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:1.2.0 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.0 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
