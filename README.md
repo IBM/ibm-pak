@@ -64,32 +64,32 @@ There are two ways to obtain the plugin
 
 macOS example using `curl`:
 ```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 macOS example using `wget`:
 ```
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-darwin-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 Linux x86-architecture example using `curl`:
 ```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Linux x86-architecture example using `wget`:
 ```
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-linux-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-linux-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Windows example (from PowerShell) using `curl`:
 ```
-curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-windows-amd64.tar.gz -o oc-ibm_pak-windows-amd64.tar.gz
-curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.1.0/oc-ibm_pak-windows-amd64.tar.gz.sig -o oc-ibm_pak-windows-amd64.tar.gz.sig
+curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-windows-amd64.tar.gz -o oc-ibm_pak-windows-amd64.tar.gz
+curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-windows-amd64.tar.gz.sig -o oc-ibm_pak-windows-amd64.tar.gz.sig
 ```
 
 Retrieve the latest public keys for macOS/Linux (example with wget):
@@ -109,22 +109,14 @@ curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-
 
 ### Download from IBM container registry
 
-The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG`
+The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.0 will have v1.2.0 of the plugin.
 
-The following table shows the mapping between container image TAG and the plugin release version
-
-| Image tag     | Plugin version |
-|---------------|----------------|
-| 1.1.0         | v1.1.0         |
-| 1.0.0         | v1.0.0         |
-| 1.0.0-alpha.0 | v1.0.0-alpha.0 |
-
-The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). Choose the Image tag from the above table. For example,
+The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). For example,
 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:1.1.0 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:1.2.0 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -133,7 +125,7 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:1.1.0 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:1.2.0 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
@@ -232,7 +224,7 @@ cp oc-ibm_pak-darwin-amd64 /usr/local/bin/oc-ibm_pak
 
 For example on Windows (from PowerShell),
 
-```bash
+```powershell
 tar -xvf oc-ibm_pak-windows-amd64.tar.gz
 Copy-Item oc-ibm_pak-windows-amd64 $HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe
 ```
@@ -254,6 +246,7 @@ Available Commands:
   get         Download a Pak from source repository
   help        Help about any command
   launch      Launch a CASE into the targeted cluster.
+  list        List CASEs available in the enabled repository or downloaded into the local directory by get command
 
 Flags:
   -h, --help              help for ibm-pak
@@ -295,6 +288,36 @@ oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 
 This will create a directory `~/.ibm-pak` and downloaded the CASE under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION`. We call `~/.ibm-pak` as the plugin root or home directory.
 You can change the plugin's root directory by exporting IBMPAK_HOME environment variable.
+
+The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.2.0. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
+
+```bash
+oc ibm-pak config repo 'IBM Cloud-Pak OCI registry' -r oci:cp.icr.io/cpopen --enable
+```
+
+The CASEs are stored as artifacts in this OCI-compliant registry. The plug in downloads the CASEs from a GitHub repository by default. The preceding command will set 'IBM Cloud-Pak OCI registry' as default. You can view the current config by issuing the following command:
+
+```bash
+oc ibm-pak config
+```
+The output of this command lists all the configured repositories. The default repository from where the CASEs are downloaded has an asterisk mark (*) against the Name field.
+
+You can list all the available CASEs to download by running the rfollowing command:
+```
+oc ibm-pak list
+```
+
+To list the versions of all downloaded CASEs you can run the following command:
+
+```
+oc ibm-pak list --downloaded
+```
+
+Get more help about the list command by running the following command:
+
+```
+oc ibm-pak list --help
+```
 
 ## Generate Mirror Manifests
 
