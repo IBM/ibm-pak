@@ -247,11 +247,6 @@ If you do not know the value of the final registry where the images will be mirr
 
 Before you mirror the images you must authenticate the registry so that `oc image mirror` can access the images and push to your TARGET_REGISTRY.
 
-**NOTE** - if the following commands are nterrupted after long run time, please try run it with `nohup` command. Example:
-```
-nohup oc image mirror -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt -a $REGISTRY_AUTH_FILE --filter-by-os '.*' --insecure --skip-multiple-scopes --max-per-registry=1 --continue-on-error=true 2>&1 | tee ocmirror.out
-```
-
 ### Authenticating the registry
 
 Complete the following steps to authenticate your registries:
