@@ -8,13 +8,7 @@
   - [Download and verify software](#download-and-verify-software)
     - [Download from github release](#download-from-github-release)
     - [Download from IBM container registry](#download-from-ibm-container-registry)
-    - [Check Certificate/Key Validity](#check-certificatekey-validity)
-      - [Verify that the certificate/key is owned by IBM:](#verify-that-the-certificatekey-is-owned-by-ibm)
-      - [Verify authenticity of certificate/key:](#verify-authenticity-of-certificatekey)
-    - [Optionally Validate Each Certificate Individually](#optionally-validate-each-certificate-individually)
-      - [Verify that the certificate is still active:](#verify-that-the-certificate-is-still-active)
-      - [Verify that the intermediate certificate is still active:](#verify-that-the-intermediate-certificate-is-still-active)
-    - [Verify Archive](#verify-archive)
+    - [Check Certificate/Key Validity and Archives](#check-certificatekey-validity-and-archives)
   - [Install](#install)
   - [Configure the locale - Optional step](#configure-the-locale---optional-step)
   - [Download the CASE](#download-the-case)
@@ -39,7 +33,7 @@ This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks v
 
 ## Prerequisites
 
-* A container image registry that supports [Docker v2-2](https://docs.docker.com/registry/spec/manifest-v2-2). We will refer to that registry as `TARGET_REGISTRY`. You will mirror your images to this `TARGET_REGISTRY`. The Openshift cluster should have access to it so that it can pull images from this registry when you [install the catalog](#launch-command-install-a-catalog). See [Creating a mirror registry](https://docs.openshift.com/container-platform/4.10/installing/disconnected_install/installing-mirroring-creating-registry.html) as a reference if you don't already have a registry.
+* A container image registry that supports [Docker v2-2](https://docs.docker.com/registry/spec/manifest-v2-2). We will refer to that registry as `TARGET_REGISTRY`. You will mirror your images to this `TARGET_REGISTRY`  that could be only hostname or hostname and port, for example: 172.16.0.10:5000. The Openshift cluster should have access to it so that it can pull images from this registry when you [install the catalog](#launch-command-install-a-catalog). Please create a mirror registry if you don't already have one.
   
 * Download and install [oc](https://docs.openshift.com/container-platform/4.10/cli_reference/openshift_cli/getting-started-cli.html).
 
@@ -62,61 +56,19 @@ There are two ways to obtain the plugin
 1. Download the gzipped tar archive for your OS from the assets in [releases](https://github.com/IBM/ibm-pak-plugin/releases)
 2. Download the corresponding `.sig` file for verification purposes
 
-macOS example using `curl`:
-```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
-```
-
-macOS example using `wget`:
-```
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
-```
-
-Linux x86-architecture example using `curl`:
-```
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
-```
-
-Linux x86-architecture example using `wget`:
-```
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-linux-amd64.tar.gz.sig
-```
-
-Windows example (from PowerShell) using `curl`:
-```
-curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-windows-amd64.tar.gz -o oc-ibm_pak-windows-amd64.tar.gz
-curl https://github.com/IBM/ibm-pak-plugin/releases/download/v1.2.0/oc-ibm_pak-windows-amd64.tar.gz.sig -o oc-ibm_pak-windows-amd64.tar.gz.sig
-```
-
-Retrieve the latest public keys for macOS/Linux (example with wget):
-```
-wget https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin.pem
-wget https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain0.pem
-wget https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain1.pem
-```
-
-Retrieve the latest public keys for windows (example with curl):
-```
-curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin.pem -o ibm-pak-plugin.pem
-curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain0.pem -o ibm-pak-plugin-chain0.pem
-curl https://raw.githubusercontent.com/IBM/ibm-pak-plugin/master/ibm-pak-plugin-chain1.pem -o ibm-pak-plugin-chain1.pem
-```
+[Download for your OS](docs/download-github.md)
 
 
 ### Download from IBM container registry
 
-The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.0 will have v1.2.0 of the plugin.
+The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.1 will have v1.2.1 of the plugin.
 
 The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). For example,
 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.0 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.1 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -125,81 +77,15 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.0 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.1 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
 ```
 
-### Check Certificate/Key Validity
+### Check Certificate/Key Validity and Archives
 
-#### Verify that the certificate/key is owned by IBM:
-Note: On windows, run below commands from Git Bash
-
-```
-openssl x509 -inform pem -in ibm-pak-plugin.pem -noout -text
-```
-
-#### Verify authenticity of certificate/key:
-
-```
-cat ibm-pak-plugin-chain0.pem > chain.pem
-cat ibm-pak-plugin-chain1.pem >> chain.pem
-
-openssl ocsp -no_nonce -issuer chain.pem -cert ibm-pak-plugin.pem -VAfile chain.pem -text -url http://ocsp.digicert.com -respout ocsptest
-```
-
-Should see a message that contains:
-
-`Response verify OK`
-
-### Optionally Validate Each Certificate Individually
-
-#### Verify that the certificate is still active:
-
-```
-openssl ocsp -no_nonce -issuer ibm-pak-plugin-chain0.pem -cert ibm-pak-plugin.pem -VAfile ibm-pak-plugin-chain0.pem -text -url http://ocsp.digicert.com -respout ocsptest
-```
-
-Should see a message that contains:
-
-`Response verify OK`
-
-#### Verify that the intermediate certificate is still active:
-
-```
-openssl ocsp -no_nonce -issuer ibm-pak-plugin-chain1.pem -cert ibm-pak-plugin-chain0.pem -VAfile ibm-pak-plugin-chain1.pem -text -url http://ocsp.digicert.com -respout ocsptest
-```
-
-Should see a message that contains:
-
-`Response verify OK`
-
-
-### Verify Archive
-
-After completing verification of the certificate, extract public key:
-
-```
-openssl x509 -pubkey -noout -in ibm-pak-plugin.pem > public.key
-```
-
-The public key is used to verify the tar archive:
-
-```
-openssl dgst -sha256 -verify public.key -signature <oc-ibm_pak_signature_file> <tar.gz_file>
-```
-
-e.g.
-
-```
-openssl dgst -sha256 -verify public.key -signature oc-ibm_pak-linux-amd64.tar.gz.sig oc-ibm_pak-linux-amd64.tar.gz
-```
-
-Should see a message that contains:
-
-`Verified OK`
-
+[Verify certificates and archives](docs/verify.md)
 
 
 
@@ -289,7 +175,7 @@ oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 This will create a directory `~/.ibm-pak` and downloaded the CASE under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION`. We call `~/.ibm-pak` as the plugin root or home directory.
 You can change the plugin's root directory by exporting IBMPAK_HOME environment variable.
 
-The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.2.0. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
+The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.2.1. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
 
 ```bash
 oc ibm-pak config repo 'IBM Cloud-Pak OCI registry' -r oci:cp.icr.io/cpopen --enable
@@ -360,6 +246,11 @@ If you do not know the value of the final registry where the images will be mirr
 ## Mirroring
 
 Before you mirror the images you must authenticate the registry so that `oc image mirror` can access the images and push to your TARGET_REGISTRY.
+
+**NOTE** - if the following commands are nterrupted after long run time, please try run it with `nohup` command. Example:
+```
+nohup oc image mirror -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt -a $REGISTRY_AUTH_FILE --filter-by-os '.*' --insecure --skip-multiple-scopes --max-per-registry=1 --continue-on-error=true 2>&1 | tee ocmirror.out
+```
 
 ### Authenticating the registry
 
