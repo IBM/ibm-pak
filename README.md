@@ -4,6 +4,7 @@
 
 - [Overview](#overview)
   - [Prerequisites](#prerequisites)
+      - [Creating registry namespaces](#creating-registry-namespaces)
   - [Supported paths](#supported-paths)
   - [Download and verify software](#download-and-verify-software)
     - [Download from github release](#download-from-github-release)
@@ -21,7 +22,7 @@
     - [Filesystem path](#filesystem-path-1)
   - [Update the global image pull secret](#update-the-global-image-pull-secret)
   - [Create ImageContentSourcePolicy](#create-imagecontentsourcepolicy)
-  - [Launch Command: Install A Catalog](#launch-command-install-a-catalog)
+  - [Install the Catalog](#install-the-catalog)
   - [For macOS Catalina users](#for-macos-catalina-users)
   - [Support](#support)
 
@@ -33,9 +34,25 @@ This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks v
 
 ## Prerequisites
 
-* A container image registry that supports [Docker v2-2](https://docs.docker.com/registry/spec/manifest-v2-2). We will refer to that registry as `TARGET_REGISTRY`. You will mirror your images to this `TARGET_REGISTRY`  that could be only hostname or hostname and port, for example: 172.16.0.10:5000. The Openshift cluster should have access to it so that it can pull images from this registry when you [install the catalog](#launch-command-install-a-catalog). Please create a mirror registry if you don't already have one.
+* A container image registry that supports [Docker v2-2](https://docs.docker.com/registry/spec/manifest-v2-2). We will refer to that registry as `TARGET_REGISTRY`. You will mirror your images to this `TARGET_REGISTRY`  that could be only hostname or hostname and port, for example: 172.16.0.10:5000. The Openshift cluster should have access to it so that it can pull images from this registry when you [install the catalog](#install-the-catalog). Please create a mirror registry if you don't already have one.
   
 * Download and install [oc](https://docs.openshift.com/container-platform/4.10/cli_reference/openshift_cli/getting-started-cli.html).
+
+#### Creating registry namespaces
+
+Top-level namespaces are the namespaces which appear at the root path of your private registry. For example, if your registry is hosted at `myregistry.com:5000`, then `mynamespace` in `myregistry.com:5000/mynamespace` is defined as a top-level namespace. There can be many top-level namespaces.
+
+When the images are mirrored to your private registry, it is required that the top-level namespace where images are getting mirrored already exists or can be automatically created during the image push. If your registry does not allow automatic creation of top-level namespaces, you must create them manually.
+
+In section [Generate Mirror Manifests](#generate-mirror-manifests) when you generate mirror manifests, you can specify the top-level namespace where you want to mirror the images by setting `TARGET_REGISTRY` to `myregistry.com:5000/mynamespace` which has the benefit of needing to create only one namespace `mynamespace` in your registry if it does not allow automatic creation of namespaces.
+
+If you do not specify your own top-level namespace, the mirroring process will use the ones which are specified by the CASEs. For example, it will try to mirror the images at `myregistry.com:5000/cp`, `myregistry.com:5000/cpopen etc`. 
+
+So if your registry does not allow automatic creation of top-level namespaces and you are not going to use your own when generating mirror manifests, then you must create the following namespaces at the root of your registry. 
+- cp
+- cpopen
+
+There can be more top-level namespaces which you might need to create. See section on [Generate Mirror Manifests](#generate-mirror-manifests) for information on how to use the `oc ibm-pak describe command` to list all the top-level namespaces.
 
 ## Supported paths
 
@@ -61,14 +78,14 @@ There are two ways to obtain the plugin
 
 ### Download from IBM container registry
 
-The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.1 will have v1.2.1 of the plugin.
+The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.0 will have v1.3.0 of the plugin.
 
 The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). For example,
 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.1 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.0 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -77,7 +94,7 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.2.1 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.0 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
@@ -143,7 +160,8 @@ Flags:
 Use "oc ibm-pak [command] --help" for more information about a command.
 
 Environment Variables:
-  IBMPAK_HOME                     the directory path where all plugin results will be saved (default "user's home directory")
+  IBMPAK_HOME                     the directory under which the plugin will create .ibm-pak directory to store the plugin command execution results
+                                   in specific folders like config, data etc (default "user's home directory")
   IBMPAK_TOLERANCE_RETRY          when set to false, launch script execution failure will not be retried
                                   when set to true, launch script execution failures will be retried without the --tolerance flag (default "true")
   IBMPAK_RESOLVE_DEPENDENCIES     when set to false, no CASE references will be resolved (default "true")
@@ -175,7 +193,7 @@ oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 This will create a directory `~/.ibm-pak` and downloaded the CASE under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION`. We call `~/.ibm-pak` as the plugin root or home directory.
 You can change the plugin's root directory by exporting IBMPAK_HOME environment variable.
 
-The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.2.1. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
+The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.3.0. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
 
 ```bash
 oc ibm-pak config repo 'IBM Cloud-Pak OCI registry' -r oci:cp.icr.io/cpopen --enable
@@ -213,14 +231,17 @@ oc ibm-pak list --help
 If you are following the `Bastion Host` path then issue the below command to generate the following files:
 
 * `images-mapping.txt` which contains a mapping of `source image` and `destination image` separted by `=` and 
-* `image-content-source-policy.yaml` which defines `ImageContentSourcePolicy` 
+* `image-content-source-policy.yaml` which defines `ImageContentSourcePolicy` and
+* `catalog-sources.yaml` and arch specific ones like `catalog-sources-os-arch.yaml` for example, `catalog-sources-linux-amd64.yaml`
 
 ```bash
-export TARGET_REGISTRY=mytargetregistry.com
+export TARGET_REGISTRY=myregistry.com:5000
 oc ibm-pak generate mirror-manifests $CASE_NAME $TARGET_REGISTRY --version $CASE_VERSION
 ```
 
-Issue the below command to see which images will be mirrored to your TARGET_REGISTRY. The output shows `Source` from where the images will be pulled and `Destination` where they will be mirrored. It also shows all the different registries in `* Registries found *` section where are referenced by images in `Source`.
+For example setting TARGET_REGISTRY to myregistry.com:5000/mynamespace will create manifests such that images will be mirrored to the top level namespace `mynamespace`.
+
+Issue the below command to see which images will be mirrored to your TARGET_REGISTRY. The output shows `Source` from where the images will be pulled and `Destination` where they will be mirrored. It also shows all the different registries in `* Registries found *` section where are referenced by images in `Source`. `Top level namespaces found` section shows the list of namespaces under which the images will be mirrored. These namespaces should be created manually in your registry root path if your registry doesn't allow automatic creation of the namespaces
 
 ```bash
 oc ibm-pak describe $CASE_NAME --version $CASE_VERSION --list-mirror-images
@@ -230,8 +251,9 @@ oc ibm-pak describe $CASE_NAME --version $CASE_VERSION --list-mirror-images
 
 If you are following the `Filesystem` path then issue the below command to generate the following files
 * `images-mapping-to-filesystem.txt` 
-* `images-mapping-from-filesystem.txt` and
-* `image-content-source-policy.yaml`
+* `images-mapping-from-filesystem.txt`
+* `image-content-source-policy.yaml` and
+* `catalog-sources.yaml` and arch specific ones like `catalog-sources-OS-ARCH.yaml` for example, `catalog-sources-linux-amd64.yaml`
 
 ```bash
 oc ibm-pak generate mirror-manifests \
@@ -242,6 +264,12 @@ oc ibm-pak generate mirror-manifests \
 ```
 
 If you do not know the value of the final registry where the images will be mirrored, you can provide a placeholder value of TARGET_REGISTRY. For example: `oc ibm-pak generate mirror-manifests $CASE_NAME file://cpfs --version $CASE_VERSION --final-registry TARGET_REGISTRY`. Note that TARGET_REGISTRY used without any environment variable expansion is just a plain string that you will replace later with the actual image registry URL when it is known to you.
+
+The  `Top level namespaces found` section on issuing the below command shows the list of namespaces under which the images will be mirrored. These namespaces should be created manually in your registry root path if your registry doesn't allow automatic creation of the namespaces
+
+```bash
+oc ibm-pak describe $CASE_NAME --version $CASE_VERSION --list-mirror-images
+```
 
 ## Mirroring
 
@@ -278,14 +306,39 @@ export REGISTRY_AUTH_FILE=$HOME/.docker/config.json
 If you are following the `Bastion Host` path then issue the below command to mirror the images to your TARGET_REGISTRY:
 
 ```bash
-export TARGET_REGISTRY=mytargetregistry.com
+export TARGET_REGISTRY=myregistry.com:5000
 oc image mirror \
   -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt \
   --filter-by-os '.*'  \
   -a $REGISTRY_AUTH_FILE \
   --insecure  \
   --skip-multiple-scopes \
-  --max-per-registry=1
+  --max-per-registry=1 \
+  --continue-on-error=true
+```
+
+```bash
+oc image mirror --help
+```
+The above command can be used to see all the options available on the mirror command. Note that we use `continue-on-error` to indicate that command should try to mirror as much as possible and continue on errors.
+
+**NOTE** - Sometimes based on the number and size of images to be mirrored, the `oc image mirror` might take longer. If you are issuing the command on a remote machine it is recommended that you run the command in the background with a nohup so even if network connection to your remote machine is lost or you close the terminal the mirroring will continue. For example, the below command will start the mirroring process in background and write the log to my-mirror-progress.txt.
+
+```bash
+nohup oc image mirror \
+ -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt \
+  -a $REGISTRY_AUTH_FILE \
+  --filter-by-os '.*' \
+  --insecure \
+  --skip-multiple-scopes \
+  --max-per-registry=1 \
+  --continue-on-error=true > my-mirror-progress.txt  2>&1 &
+```
+
+You can view the progress of the mirror by issuing the below command on the remote machine.
+
+```bash
+tail -f my-mirror-progress.txt
 ```
 
 ### Filesystem path
@@ -299,7 +352,8 @@ oc image mirror \
   -a $REGISTRY_AUTH_FILE \
   --insecure \
   --skip-multiple-scopes \
-  --max-per-registry=1
+  --max-per-registry=1 \
+  --continue-on-error=true
 ```
 
 This will create a v2 folder in the current directory where all the images are copied. For example, in [the previous section](#filesystem-path) if provided file://local as input during generate mirror-manifests then the preceding command will create a subdirectory local under v2 and copy the images under it.
@@ -312,7 +366,7 @@ Continue to move the following items to your another machine behind the firewall
 
 On your another machine where you copied all the above files, issue the below command to mirror images from the Filesystem to the TARGET_REGISTRY
 
-**NOTE** - If you used the placeholder value of TARGET_REGISTRY as a parameter to --final-registry at the time of [generating mirror manifests](), then before running the following command, find and replace the placeholder value of TARGET_REGISTRY in the file, images-mapping-from-filesystem.txt, with the actual registry where you want to mirror the images. For example, if you want to mirror images to myregistry.com/mynamespace then replace TARGET_REGISTRY with myregistry.com/mynamespace.
+**NOTE** - If you used the placeholder value of TARGET_REGISTRY as a parameter to --final-registry at the time of [generating mirror manifests](), then before running the following command, find and replace the placeholder value of TARGET_REGISTRY in the file, images-mapping-from-filesystem.txt, with the actual registry where you want to mirror the images. For example, if you want to mirror images to myregistry.com:5000/mynamespace then replace TARGET_REGISTRY with myregistry.com:5000/mynamespace.
 
 ```bash
 oc image mirror \
@@ -322,7 +376,8 @@ oc image mirror \
   --filter-by-os '.*' \
   --insecure \
   --skip-multiple-scopes \
-  --max-per-registry=1
+  --max-per-registry=1 \
+  --continue-on-error=true
 ```
 
 `$v2_dir` refers to the parent directory on the file system where the v2 directory was copied to.
@@ -344,7 +399,7 @@ oc patch image.config.openshift.io/cluster --type=merge \
 ```
 
 
-If you are following the `Filesystem path` and used the placeholder value of TARGET_REGISTRY as a parameter to --final-registry at the time of generating mirror manifests, then before running the following command, find and replace the placeholder value of TARGET_REGISTRY in file, ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/image-content-source-policy.yaml with the actual registry where you want to mirror the images. For example, replace TARGET_REGISTRY with myregistry.com/mynamespace.
+If you are following the `Filesystem path` and used the placeholder value of TARGET_REGISTRY as a parameter to --final-registry at the time of generating mirror manifests, then before running the following command, find and replace the placeholder value of TARGET_REGISTRY in file, ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/image-content-source-policy.yaml with the actual registry where you want to mirror the images. For example, replace TARGET_REGISTRY with myregistry.com:5000/mynamespace.
 
 **Important** If you are using Red Hat OpenShift Container Platform version 4.7 or earlier, then this step might cause your cluster nodes to drain and restart sequentially to apply the configuration changes.
 
@@ -361,8 +416,17 @@ oc get MachineConfigPool -w
 
 Wait until all MachineConfigPools are updated.
 
-## Launch Command: Install A Catalog
+## Install the Catalog
 
+The recommended way to install the catalog is to apply the `CatalogSource` manifests found in the directory `~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION` in files with name prefixes as 
+ `catalog-sources`, for example catalog-sources.yaml. Apply all such `catalog-sources-XXX.yaml` manifests present in this directory. Review the files before applying them like the namespace.
+
+ ```bash
+ oc apply -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/catalog-sources.yaml
+ ```
+
+
+You can also install the catalog using the below commands.
 
 Issue the following command to initiate the install-catalog action for the top level CASE:
 
