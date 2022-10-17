@@ -78,14 +78,14 @@ There are two ways to obtain the plugin
 
 ### Download from IBM container registry
 
-The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.0 will have v1.3.0 of the plugin.
+The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.1 will have v1.3.1 of the plugin.
 
 The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). For example,
 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.0 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.1 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -94,7 +94,7 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.0 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.3.1 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
@@ -193,7 +193,7 @@ oc ibm-pak get $CASE_NAME --version $CASE_VERSION
 This will create a directory `~/.ibm-pak` and downloaded the CASE under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION`. We call `~/.ibm-pak` as the plugin root or home directory.
 You can change the plugin's root directory by exporting IBMPAK_HOME environment variable.
 
-The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.3.0. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
+The plug in supports downloading the CASEs from cp.icr.io/cpopen since v1.3.1. You can issue the following command to configure a repository which will download the CASEs from cp.icr.io registry (an OCI-compliant registry) before running the oc ibm-pak get command to download the CASEs:
 
 ```bash
 oc ibm-pak config repo 'IBM Cloud-Pak OCI registry' -r oci:cp.icr.io/cpopen --enable
