@@ -95,6 +95,8 @@ Verify that the installation was successful by issuing the below command
 $ oc ibm-pak --help
 ```
 
+Information about plugin's available commands are described [here](docs/command-help.md)
+
 ## Installing your IBM Cloud Pak by mirroring Cloud Pak images to a private container registry
 
 Steps are described [here](https://www.ibm.com/docs/en/cloud-paks/1.0?topic=plugin-installing-by-connected-disconnected-mirroring).
