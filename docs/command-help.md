@@ -133,7 +133,8 @@ Flags:
 
 Environment Variables:
     IBMPAK_RESOLVE_DEPENDENCIES     when set to false, no CASE references will be resolved (default "true")
-    IBMPAK_HTTP_TIMEOUT             Overrides the default HTTP timeout value used in client calls to external servers. Measured in seconds (default "10")
+    IBMPAK_HTTP_TIMEOUT             Overrides the default HTTP timeout value used in client calls to external servers. Measured in seconds (default "20")
+    IBMPAK_HTTP_RETRY               Maximum http retry attempts, for exampe when a timeout is encountered on slow networks (default "3")
     HTTPS_PROXY or https_proxy      the URL of a HTTPS proxy (e.g. https://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
     HTTP_PROXY or http_proxy        the URL of a HTTP proxy (e.g. http://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
 ```
@@ -158,8 +159,8 @@ Flags:
     --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
     --filter string           comma separated list of values, which can either be a group name or architecture (default "")
     --final-registry string   if the provided target registry is a filesystem (has a "file://" prefix), a final registry needs to be provided to 
-                              generate proper ICSP and Catalog Sources (default "")
-    -h, --help                help for mirror-manifests
+                              generate proper ICSP and Catalog Sources (default "") 
+    -h, --help                help for mirror-manifests   
 ```
 
 Example:
