@@ -26,7 +26,7 @@ There are two ways to obtain the plugin
 
 ### Download from github release
 
-1. Download the gzipped tar archive for your OS from the assets in [releases](https://github.com/IBM/ibm-pak-plugin/releases)
+1. Download the gzipped tar archive for your OS from the assets in [releases](https://github.com/IBM/ibm-pak/releases)
 2. Download the corresponding `.sig` file for verification purposes
 
 [Download for your OS](docs/download-github.md)
@@ -36,7 +36,7 @@ There are two ways to obtain the plugin
 
 The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.1 will have v1.4.1 of the plugin.
 
-The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak-plugin](https://github.com/IBM/ibm-pak-plugin). For example,
+The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak](https://github.com/IBM/ibm-pak). For example,
 
 1. If you use docker:
 
