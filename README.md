@@ -68,7 +68,7 @@ cd plugin-dir
   
 NOTE:
 
-- While copying, the destination name should be `oc-ibm_pak` (On windows, name should be `oc-ibm_pak.exe`) and cannot be changed.
+- While copying, the destination name must be oc-ibm_pak (On windows, name must be oc-ibm_pak.exe) and cannot be changed including the dash and the underscore.  These special characters are used by the oc command to find and setup the plugin
 - On Mac before copying oc-ibm_pak-darwin-amd64 to /usr/local/bin/oc-ibm_pak or any directory in your PATH, refer to [For macOS Catalina users](#for-macos-catalina-users)
 - If /usrlocal/bin is not accessible then place it in an accessible folder and put that folder in PATH
 - On windows, copy oc-ibm_pak-windows-amd64 to $HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe or any directory and add this path to PATH environment variable.
