@@ -34,14 +34,14 @@ There are two ways to obtain the plugin
 
 ### Download from IBM container registry
 
-The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.1 will have v1.4.1 of the plugin.
+The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where TAG should be replaced with the corresponding plugin version, for example cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.2 will have v1.4.2 of the plugin.
 
 The following command will create a container and copy the plug-ins for all the supported platforms in a directory, plugin-dir. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The plugin-dir will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak](https://github.com/IBM/ibm-pak). For example,
 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.1 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.2 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
@@ -50,7 +50,7 @@ cd plugin-dir
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.1 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.4.2 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
@@ -68,7 +68,7 @@ cd plugin-dir
   
 NOTE:
 
-- While copying, the destination name must be oc-ibm_pak (On windows, name must be oc-ibm_pak.exe) and cannot be changed including the dash and the underscore.  These special characters are used by the oc command to find and setup the plugin
+- While copying, the destination name must be oc-ibm_pak (On windows, name must be oc-ibm_pak.exe) and cannot be changed including the dash and the underscore. These special characters are used by the oc command to find and setup the plugin
 - On Mac before copying oc-ibm_pak-darwin-amd64 to /usr/local/bin/oc-ibm_pak or any directory in your PATH, refer to [For macOS Catalina users](#for-macos-catalina-users)
 - If /usrlocal/bin is not accessible then place it in an accessible folder and put that folder in PATH
 - On windows, copy oc-ibm_pak-windows-amd64 to $HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe or any directory and add this path to PATH environment variable.
