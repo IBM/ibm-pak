@@ -156,11 +156,13 @@ Usage:
 oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <case version> --filter <list of groups> [--final-registry <final-registry>]
 
 Flags:
-    --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
-    --filter string           comma separated list of values, which can either be a group name or architecture (default "")
-    --final-registry string   if the provided target registry is a filesystem (has a "file://" prefix), a final registry needs to be provided to 
-                              generate proper ICSP and Catalog Sources (default "") 
-    -h, --help                help for mirror-manifests   
+      --filter string           comma separated list of values, which can either be a group name or architecture (default "")
+      --final-registry string   if the provided target registry is a filesystem (has a "file://" prefix), a final registry needs to be provided to generate proper ICSP and Catalog Sources, if target registry is a registry server then this argument enables the registry to registry mirroring path (default "")
+  -h, --help                    help for mirror-manifests
+      --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
+Global Flags:
+      --log_file string   If non-empty, use this log file
+  -v, --v Level           number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
 ```
 
 Example:
@@ -170,6 +172,9 @@ oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.
 
 2) Generate mirror manifests for a target directory structure that can be served as a registry
 oc ibm-pak generate mirror-manifests ibm-my-cloudpak file://myrepository --version 1.0.0 --final-registry myregistry.com
+
+3) Generate mirror manifests for mirroring images to an intermediate registry server and from that server to a final registry server specified via final-registry argument. This creates images-mapping-to-registry.txt and images-mapping-from-registry.txt. Both of these files should used as input to `oc image mirrorr`. When images-mapping-to-registry.txt is used, it will enable mirroring the images to intermediate-registry.com. When images-mapping-from-registry.txt. is used, it will enable mirroring images from intermediate-registry.com to myregistry.com
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak intermediate-registry.com --version 1.0.0 --final-registry myregistry.com
 ```
 
 # oc ibm-pak describe

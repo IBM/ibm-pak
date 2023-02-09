@@ -1,0 +1,80 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Download public keys](#download-public-keys)
+- [Check Certificate/Key Validity and Archives](#check-certificatekey-validity-and-archives)
+  - [Check Certificate/Key Validity](#check-certificatekey-validity)
+    - [Verify that the certificate/key is owned by IBM:](#verify-that-the-certificatekey-is-owned-by-ibm)
+    - [Verify authenticity of certificate/key:](#verify-authenticity-of-certificatekey)
+  - [Optionally Compare the certificate and the public key](#optionally-compare-the-certificate-and-the-public-key)
+    - [Check public key details](#check-public-key-details)
+    - [Check certficate details](#check-certficate-details)
+  - [Verify Archive](#verify-archive)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+# Download public keys
+Please follow instructions provided [here](download-github.md#download-public-keys-for-ibm-pak-versions-greater-than-or-equal-to-v150)
+# Check Certificate/Key Validity and Archives
+
+* [Check Certificate/Key Validity](#check-certificate/key-validity)
+* [Optionally Validate Each Certificate Individually](#optionally-validate-each-certificate-individually)
+* [Verify Archive](#verify-archive)
+
+
+
+## Check Certificate/Key Validity
+
+### Verify that the certificate/key is owned by IBM:
+Note: On windows, run below commands from Git Bash
+
+```
+openssl x509 -inform pem -in ibm-pak-plugin.pem.cer -noout -text
+```
+
+### Verify authenticity of certificate/key:
+
+```
+openssl ocsp -no_nonce -issuer ibm-pak-plugin.pem.chain -cert ibm-pak-plugin.pem.cer -VAfile ibm-pak-plugin.pem.chain -text -url http://ocsp.digicert.com -respout ocsptest
+```
+
+Should see a message that contains:
+
+`Response verify OK`
+
+## Optionally Compare the certificate and the public key
+
+### Check public key details
+
+```
+openssl rsa -noout -text -inform PEM -in ibm-pak-plugin.pem.pub.key -pubin
+```
+
+Make a note of modulus and Exponent
+
+### Check certficate details
+
+```
+openssl x509 -inform pem -in ibm-pak-plugin.pem.cer -noout -text
+```
+
+Check the `Public-Key` section in the output and compare with previous result.
+
+
+## Verify Archive
+
+We will verify oc-ibm_pak-linux-amd64.tar.gz. Steps will be same for other archives.
+
+Convert the signature from base64 to bytes
+
+```
+export ARCHIVE=oc-ibm_pak-linux-amd64.tar.gz
+openssl enc -d -A -base64 -in "${ARCHIVE}.sig" -out "/tmp/${ARCHIVE}.decoded.sig"
+```
+
+Verify the signature bytes:
+
+```
+export ARCHIVE=oc-ibm_pak-linux-amd64.tar.gz
+openssl dgst -verify ibm-pak-plugin.pem.pub.key -keyform PEM -sha256 -signature "/tmp/${ARCHIVE}.decoded.sig" -binary "${ARCHIVE}"
+```

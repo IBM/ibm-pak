@@ -2,6 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Download public keys](#download-public-keys)
 - [Check Certificate/Key Validity and Archives](#check-certificatekey-validity-and-archives)
   - [Check Certificate/Key Validity](#check-certificatekey-validity)
     - [Verify that the certificate/key is owned by IBM:](#verify-that-the-certificatekey-is-owned-by-ibm)
@@ -12,6 +13,8 @@
   - [Verify Archive](#verify-archive)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+# Download public keys
+Please follow instructions provided [here](download-github.md#download-public-keys-for-ibm-pak-versions-less-than-v150)
 
 # Check Certificate/Key Validity and Archives
 
