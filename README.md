@@ -94,7 +94,7 @@ Copy-Item oc-ibm_pak-windows-amd64 $HOME\AppData\Local\Microsoft\WindowsApps\oc-
 Verify that the installation was successful by issuing the below command
 
 ```bash
-$ oc ibm-pak --help
+oc ibm-pak --help
 ```
 
 Information about plugin's available commands are described [here](docs/command-help.md)
