@@ -11,6 +11,7 @@
 - [oc ibm-pak describe](#oc-ibm-pak-describe)
 - [oc ibm-pak launch](#oc-ibm-pak-launch)
 - [oc ibm-pak list](#oc-ibm-pak-list)
+- [oc ibm-pak verify](#oc-ibm-pak-verify)
 
 # oc ibm-pak config repo
 Configure the plug-in to download CASEs from the raw github url or as OCI artifacts from IBM Cloud Container Registry (ICCR).
@@ -134,7 +135,7 @@ Flags:
 Environment Variables:
     IBMPAK_RESOLVE_DEPENDENCIES     when set to false, no CASE references will be resolved (default "true")
     IBMPAK_HTTP_TIMEOUT             Overrides the default HTTP timeout value used in client calls to external servers. Measured in seconds (default "20")
-    IBMPAK_HTTP_RETRY               Maximum http retry attempts, for exampe when a timeout is encountered on slow networks (default "3")
+    IBMPAK_HTTP_RETRY               Maximum http retry attempts, for example when a timeout is encountered on slow networks (default "3")
     HTTPS_PROXY or https_proxy      the URL of a HTTPS proxy (e.g. https://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
     HTTP_PROXY or http_proxy        the URL of a HTTP proxy (e.g. http://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
 ```
@@ -287,4 +288,32 @@ oc ibm-pak list --case-name ibm-my-cloudpak --downloaded
 
 8) List downloaded versions of case in yaml output
 oc ibm-pak list --case-name ibm-my-cloudpak --downloaded -o yaml
+```
+
+# oc ibm-pak verify
+Verify the integrity of downloaded CASEs
+
+Usage:
+```
+oc ibm-pak verify [<case-name> [--version <version>]]
+
+Flags:
+  -h, --help             help for verify
+  -o, --output string    Specify output format as json, yaml or ""
+      --version string   CASE version
+Global Flags:
+      --log_file string   If non-empty, use this log file
+  -v, --v Level           number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
+```
+Examples:
+
+```
+1)Verify the integrity of all the downloaded CASEs
+oc ibm-pak verify
+
+2)Verify the integrity of all the downloaded versions of a CASE
+oc ibm-pak verify ibm-cp-common-services
+
+3)Verify the integrity of a specific version of a downloaded CASE
+oc ibm-pak verify ibm-cp-common-services --version 1.19.3
 ```
