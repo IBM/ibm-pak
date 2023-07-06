@@ -5,10 +5,15 @@
 - [oc ibm-pak config repo](#oc-ibm-pak-config-repo)
 - [oc ibm-pak config locale](#oc-ibm-pak-config-locale)
 - [oc ibm-pak config color](#oc-ibm-pak-config-color)
+- [oc ibm-pak config mirror-tools](#oc-ibm-pak-config-mirror-tools)
+- [oc ibm-pak config mirror-tools oc-image-mirror](#oc-ibm-pak-config-mirror-tools-oc-image-mirror)
+- [oc ibm-pak config mirror-tools oc-mirror](#oc-ibm-pak-config-mirror-tools-oc-mirror)
+- [oc ibm-pak config catalog-builder](#oc-ibm-pak-config-catalog-builder)
 - [oc ibm-pak config](#oc-ibm-pak-config)
 - [oc ibm-pak get](#oc-ibm-pak-get)
 - [oc ibm-pak generate mirror-manifests](#oc-ibm-pak-generate-mirror-manifests)
 - [oc ibm-pak describe](#oc-ibm-pak-describe)
+- [oc ibm-pak generate online-manifests](#oc-ibm-pak-generate-online-manifests)
 - [oc ibm-pak launch](#oc-ibm-pak-launch)
 - [oc ibm-pak list](#oc-ibm-pak-list)
 - [oc ibm-pak verify](#oc-ibm-pak-verify)
@@ -86,16 +91,147 @@ oc ibm-pak config color --enable true
 oc ibm-pak config color --enable false
 ```
 
+# oc ibm-pak config mirror-tools
+Configure the mirror-tools (with v1.8.0 and later)
+
+Usage:
+```
+oc ibm-pak config mirror-tools --enabled <oc-image-mirror|oc-mirror>
+
+Flags:
+    -e, --enabled string   Set the enabled tool to be used from the following list: oc-image-mirror, oc-mirror (default "oc-image-mirror")
+    -h, --help             help for mirror-tools
+```
+
+Example: 
+```
+1) Enable oc image mirror tool
+oc ibm-pak config mirror-tools --enabled oc-image-mirror
+
+2) Enable oc mirror tool
+oc ibm-pak config mirror-tools --enabled oc-mirror
+```
+
+# oc ibm-pak config mirror-tools oc-image-mirror
+Configure the oc-image-mirror tool settings (with v1.8.0 and later)
+
+Usage:
+```
+oc ibm-pak config mirror-tools oc-image-mirror < --connected-flags|--disconnected-target-flags|--disconnected-final-flags > <flags>
+
+Flags:
+    --connected-flags string             Set the connected mirroring flags for configuring the oc image mirror tool in connected mode (Setting this flag as AUTO_GENERATE will make the plugin use --filter-by-os '.*' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1) (default "AUTO_GENERATE")
+
+    --disconnected-final-flags string    Set the disconnected mirroring to final flags for configuring the oc image mirror tool to final registry in disconnected mode (Setting this flag as AUTO_GENERATE will make the plugin use --filter-by-os '.*' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1 --from-dir "$IMAGE_PATH") (default "AUTO_GENERATE")
+
+    --disconnected-target-flags string   Set the disconnected mirroring to target flags for configuring the oc image mirror tool to target filesystem or registry in disconnected mode (Setting this flag as AUTO_GENERATE will make the plugin use --filter-by-os '.*' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1 --dir "$IMAGE_PATH") (default "AUTO_GENERATE")
+
+    -h, --help                           help for oc-image-mirror
+```
+
+Example: 
+```
+1) Update connected-flags
+oc ibm-pak config mirror-tools oc-image-mirror --connected-flags '--filter-by-os '\''.*'\'' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1'
+
+2) Reset connected-flags to AUTO_GENERATE
+oc ibm-pak config mirror-tools oc-image-mirror --connected-flags AUTO_GENERATE
+
+3) Update disconnected-target-flags
+oc ibm-pak config mirror-tools oc-image-mirror --disconnected-target-flags '--filter-by-os '\''.*'\'' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1 --dir "$IMAGE_PATH"'
+
+4) Update disconnected-final-flags
+oc ibm-pak config mirror-tools oc-image-mirror --disconnected-final-flags '--filter-by-os '\''.*'\'' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1 --from-dir "$IMAGE_PATH"'
+```
+
+# oc ibm-pak config mirror-tools oc-mirror
+Configure the oc-mirror tool settings (with v1.8.0 and later)
+
+Usage:
+```
+oc ibm-pak config mirror-tools oc-mirror --storage=<storage> [--storage-skip-tls] --target-catalog=<target-catalog> --target-tag=<target-tag> < --connected-flags|--disconnected-target-flags|--disconnected-final-flags > <flags>
+
+Flags:
+    --connected-flags string             Set the connected mirroring flags for configuring the oc mirror tool in connected mode (Setting this flag as AUTO_GENERATE will make the plugin use --dest-skip-tls --max-per-registry=6) (default "AUTO_GENERATE")
+    
+    --disconnected-final-flags string    Set the disconnected mirroring to final flags for configuring the oc mirror tool to final registry in disconnected mode (Setting this flag as AUTO_GENERATE will make the plugin use --dest-skip-tls --from=sequence_file.tar) (default "AUTO_GENERATE")
+    
+    --disconnected-target-flags string   Set the disconnected mirroring to target flags for configuring the oc mirror tool to target filesystem or registry in disconnected mode (Setting this flag as AUTO_GENERATE will make the plugin use --dest-skip-tls --max-per-registry=6) (default "AUTO_GENERATE")
+    
+    -h, --help                           help for oc-mirror
+    
+    -s, --storage string                 Set the storage via a file or a docker reference
+
+    --storage-skip-tls                   Disable TLS verification when using a registry server as storage (applies only to docker registry)
+    
+    --target-catalog string              Set the target catalog (including registry path) (default "ibm-catalog")
+    
+    --target-tag string                  Set the target catalog tag (Setting this flag as AUTO_GENERATE will make the plugin generate target tag dynamically) (default "AUTO_GENERATE")
+```
+
+Example: 
+```
+1) Configure a local path based storage 
+oc ibm-pak config mirror-tools oc-mirror --storage file:///tmp/local-backed
+
+2) Configure a registry based storage for oc-mirror
+oc ibm-pak config mirror-tools oc-mirror --storage docker://quay.io/foo/bar:example
+
+3) Configure a registry based storage for oc-mirror allowing insecure connections 
+oc ibm-pak config mirror-tools oc-mirror --storage docker://quay.io/foo/bar:example --storage-skip-tls
+
+4) Configure a target catalog and target tag
+oc ibm-pak config mirror-tools oc-mirror --target-catalog ibm-catalog --target-tag latest
+
+5) Update connected-flags
+oc ibm-pak config mirror-tools oc-mirror --connected-flags '--dest-skip-tls --max-per-registry=6'
+
+6) Reset connected-flags to AUTO_GENERATE
+oc ibm-pak config mirror-tools oc-mirror --connected-flags AUTO_GENERATE
+
+7) Update disconnected-target-flags
+oc ibm-pak config mirror-tools oc-mirror --disconnected-target-flags '--dest-skip-tls --max-per-registry=6'
+
+8) Update disconnected-final-flags
+oc ibm-pak config mirror-tools oc-mirror --disconnected-final-flags '--dest-skip-tls --from=sequence_file.tar'
+```
+
+# oc ibm-pak config catalog-builder
+Configures the catalog-builder settings (with v1.8.0 and later)
+
+Usage:
+```
+oc ibm-pak config catalog-builder --base-image myregistry.com/images/base-image:1.0
+
+Flags:
+    --base-image string   Set the base image for fbc catalog (Setting this flag as AUTO_GENERATE will make the plugin use icr.io/cpopen/ibm-operator-catalog:fbc-base-latest) (default "AUTO_GENERATE")
+  -h, --help              help for catalog-builder
+```
+
+Example:
+```
+1) Configure a catalog base image used during curation
+oc ibm-pak config catalog-builder --base-image icr.io/cpopen/ibm-operator-catalog:fbc-base-latest
+
+2) Reset catalog base image to AUTO_GENERATE
+oc ibm-pak config catalog-builder --base-image AUTO_GENERATE
+```
+
 # oc ibm-pak config
 To see the existing configuration details for plug-in.
 
 Usage:
 ```
-oc ibm-pak config
+oc ibm-pak config [-o yaml|json]
 ```
 
 Example Output : 
 ```
+
+Config file
+
+Version: 1.1.0
+
 Repository Config
 
 Name                        CASE Repo URL                                          
@@ -110,6 +246,47 @@ Language: en_US
 Color Config
 
 Enabled: true
+
+Mirror Tools Config
+
+oc image mirror: 
+---------------
+Connected Mirroring Flags:
+  AUTO_GENERATE (--filter-by-os '.*' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1)
+
+Disconnected Mirroring Flags:
+  To Target FileSystem or Registry:
+    AUTO_GENERATE (--filter-by-os '.*' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1 --dir "$IMAGE_PATH")
+
+  To Final Registry:
+    AUTO_GENERATE (--filter-by-os '.*' -a $REGISTRY_AUTH_FILE --insecure --skip-multiple-scopes --max-per-registry=1 --from-dir "$IMAGE_PATH")
+
+oc mirror: 
+---------
+Local storage config:
+  Path: /Users/manojishwarbhaipaladiya/.ibm-pak/oc-mirror-storage
+
+Connected Mirroring Flags:
+  AUTO_GENERATE (--dest-skip-tls --max-per-registry=6)
+
+Disconnected Mirroring Flags:
+  To Target FileSystem or Registry:
+    AUTO_GENERATE (--dest-skip-tls --max-per-registry=6)
+
+  To Final Registry:
+    AUTO_GENERATE (--dest-skip-tls --from=sequence_file.tar)
+
+Target catalog: ibm-catalog
+
+Target tag: AUTO_GENERATE
+
+
+Enabled tool: oc image mirror
+
+Catalog Builder Config
+
+Base image: AUTO_GENERATE (icr.io/cpopen/ibm-operator-catalog:fbc-base-latest)
+
 ```
 
 # oc ibm-pak get
@@ -154,16 +331,21 @@ Generate mirror manifests for a CASE
 
 Usage:
 ```
-oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <case version> --filter <list of groups> [--final-registry <final-registry>]
+oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <case version> --filter <list of groups> [--final-registry <final-registry>] [--insecure] [--dry-run]
 
 Flags:
-      --filter string           comma separated list of values, which can either be a group name or architecture (default "")
-      --final-registry string   if the provided target registry is a filesystem (has a "file://" prefix), a final registry needs to be provided to generate proper ICSP and Catalog Sources, if target registry is a registry server then this argument enables the registry to registry mirroring path (default "")
-  -h, --help                    help for mirror-manifests
-      --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
+    --dry-run                 If option provided, leave the merged FBC content in staging directory (optional)
+    --filter string           comma separated list of values, which can either be a group name or architecture (default "")
+
+    --final-registry string   if the target registry is a filesystem (has a "file://" prefix), then this argument must be provided to generate proper ICSP
+    and Catalog Sources, if the target registry is a registry server, then this argument can be provided optionally to enable mirroring to an intermediate registry followed by mirroring to a final registry specified by this argument (default "")
+
+    -h, --help                help for mirror-manifests
+    --insecure                skip TLS/SSL verification (optional)
+    --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
 Global Flags:
-      --log_file string   If non-empty, use this log file
-  -v, --v Level           number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
+    --log_file string         If non-empty, use this log file
+    -v, --v Level             number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
 ```
 
 Example:
@@ -176,6 +358,12 @@ oc ibm-pak generate mirror-manifests ibm-my-cloudpak file://myrepository --versi
 
 3) Generate mirror manifests for mirroring images to an intermediate registry server and from that server to a final registry server specified via final-registry argument. This creates images-mapping-to-registry.txt and images-mapping-from-registry.txt. Both of these files should used as input to `oc image mirrorr`. When images-mapping-to-registry.txt is used, it will enable mirroring the images to intermediate-registry.com. When images-mapping-from-registry.txt. is used, it will enable mirroring images from intermediate-registry.com to myregistry.com
 oc ibm-pak generate mirror-manifests ibm-my-cloudpak intermediate-registry.com --version 1.0.0 --final-registry myregistry.com
+
+4) Generate mirror manifests for an insecure target registry
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --insecure
+
+5) Generate mirror manifests metadata in staging directory for FBC CASE
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --dry-run
 ```
 
 # oc ibm-pak describe
@@ -183,11 +371,10 @@ Describe command prints image lists, dependencies, registries and other informat
 
 Usage:
 ```
-oc ibm-pak describe <case-name> --version <version> (--list-case-images | --list-mirror-images)
+oc ibm-pak describe <case-name> --version <version> (--list-mirror-images)
 
 Flags:
     --version string       "case version" (required)
-    --list-case-images     list images from downloaded CASE (required if --list-mirror-images is not used)
     --list-mirror-images   list images from generated mirror manifests (required if --list-case-images is not used)
     -o, --output string    Specify output format as json, yaml or ""
     -h, --help             help for describe
@@ -195,11 +382,24 @@ Flags:
 
 Example:
 ```
-1) List case images
-oc ibm-pak describe ibm-my-cloudpak --version 1.0.0 --list-case-images
-
-2) List mirror images
+List mirror images:
 oc ibm-pak describe ibm-my-cloudpak --version 1.0.0 --list-mirror-images
+```
+
+# oc ibm-pak generate online-manifests
+Generate online manifests for a CASE (with v1.8.0 and later)
+Usage:
+```
+oc ibm-pak generate online-manifests <case name> --version <case version>
+
+Flags:
+    --version string   the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
+    -h, --help         help for online-manifests
+```
+
+Example:
+```
+oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0
 ```
 
 # oc ibm-pak launch
