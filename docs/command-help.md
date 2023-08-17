@@ -331,21 +331,22 @@ Generate mirror manifests for a CASE
 
 Usage:
 ```
-oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <case version> --filter <list of groups> [--final-registry <final-registry>] [--insecure] [--dry-run]
+oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <case version> --filter <list of groups> [--final-registry <final-registry>] 
 
 Flags:
-    --dry-run                 If option provided, leave the merged FBC content in staging directory (optional)
-    --filter string           comma separated list of values, which can either be a group name or architecture (default "")
-
-    --final-registry string   if the target registry is a filesystem (has a "file://" prefix), then this argument must be provided to generate proper ICSP
-    and Catalog Sources, if the target registry is a registry server, then this argument can be provided optionally to enable mirroring to an intermediate registry followed by mirroring to a final registry specified by this argument (default "")
-
-    -h, --help                help for mirror-manifests
-    --insecure                skip TLS/SSL verification (optional)
-    --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
+      --dry-run                    If option provided, leave the merged FBC content in staging directory (optional)
+      --filter string              comma separated list of values, which can either be a group name or architecture (default "")
+      --final-max-components int   The maximum number of path components allowed in a final registry mapping (0: all paths used, 1: error - not allowed, 2 and more: paths compressed from right to left to honor # provided) (optional)
+      --final-registry string      if the target registry is a filesystem (has a "file://" prefix), then this argument must be provided to generate proper ICSP and Catalog Sources,
+                                   if the target registry is a registry server, then this argument can be provided optionally to enable mirroring to an intermediate registry followed by mirroring to a final registry specified by this argument (default "")
+  -h, --help                       help for mirror-manifests
+      --insecure                   skip TLS/SSL verification (optional)
+      --max-components int         The maximum number of path components allowed in a target registry mapping (0: all paths used, 1: error - not allowed, 2 and more: paths compressed from right to left to honor # provided) (optional)
+      --max-icsp-size int          The maximum number of bytes for the generated ICSP yaml(s) when using --max-components. Defaults to 250000 (default 250000)
+      --version string             the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
 Global Flags:
-    --log_file string         If non-empty, use this log file
-    -v, --v Level             number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
+      --log_file string   If non-empty, use this log file
+  -v, --v Level           number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
 ```
 
 Example:
@@ -364,7 +365,22 @@ oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.
 
 5) Generate mirror manifests metadata in staging directory for FBC CASE
 oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --dry-run
+
+6) Generate mirror manifests for a target registry where path is compressed to --max-components value. (with v1.9.0 and later)
+Max-components:
+- value of 0 or not called - default (nothing changes, all paths structure us used)
+- value of 1 - error (value not allowed)
+- value of 2 or more - paths compressed from right to left to honor # provided
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --max-components 2
+
+7) Generate mirror manifests for mirroring images to an intermediate registry server and from that server to a final registry server specified via final-registry argument. This creates images-mapping-to-registry.txt and images-mapping-from-registry.txt where intermediate registry paths are compressed to satisfy the value of --max-compoenents and final registry paths are compressed to --final-max-components value. If final-max-compoents is set to default or final-max-components > max-components, final-max-compoents is set to max-components value. (with v1.9.0 and later)
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak intermediate-registry.com --version 1.0.0 --final-registry myregistry.com --max-components 3 --final-max-components 2
+
+8) Generate mirror manifests for a target registry where path is compressed to --max-components value and ICSP is generated with sharding as per the --max-icsp-size value. (with v1.9.0 and later)
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --max-components 2 --max-icsp-size 10000
 ```
+
+Starting from `v1.9.0`, path compression can be used to install Cloud Paks into target registries with a restricted repository hierarchy . For more information on compression and sharding generated ICSP files, please refer here [documentation on compression and sharding registry paths](compression-sharding.md).
 
 # oc ibm-pak describe
 Describe command prints image lists, dependencies, registries and other information for this CASE
