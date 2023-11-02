@@ -1,6 +1,7 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
 
 - [Overview](#overview)
   - [Download and verify software](#download-and-verify-software)
@@ -21,8 +22,9 @@ This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks v
 ## Download and verify software
 
 There are two ways to obtain the plugin
-* [Github Release](#download-from-github-release)
-* [Container image](#download-from-ibm-container-registry)
+
+- [Github Release](#download-from-github-release)
+- [Container image](#download-from-ibm-container-registry)
 
 ### Download from github release
 
@@ -31,26 +33,25 @@ There are two ways to obtain the plugin
 
 [Download for your OS](docs/download-github.md)
 
-
 ### Download from IBM container registry
 
-The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where `TAG` should be replaced with the corresponding plugin version, for example `cp.icr.io/cpopen/cpfs/ibm-pak:v1.10.0` will have `v1.10.0` of the plugin.
+The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where `TAG` should be replaced with the corresponding plugin version, for example `cp.icr.io/cpopen/cpfs/ibm-pak:v1.11.0` will have `v1.11.0` of the plugin.
 
 The following command will create a container and copy the plug-ins for all the supported platforms in a directory, `plugin-dir`. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The `plugin-dir` will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak](https://github.com/IBM/ibm-pak). For example,
 
 1. If you use docker:
 
 ```
-id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.10.0 - )
+id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.11.0 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
-``` 
+```
 
 2. If you podman:
 
 ```
-id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.10.0 - )
+id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.11.0 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
 cd plugin-dir
@@ -58,16 +59,14 @@ cd plugin-dir
 
 ### Check Certificate/Key Validity and Archives
 
-* [ibm-pak versions less than v1.5.0](docs/verify.md)
+- [ibm-pak versions less than v1.5.0](docs/verify.md)
 
-* [ibm-pak versions greater than or equal to v1.5.0](docs/verify-v2.md)
-
-
+- [ibm-pak versions greater than or equal to v1.5.0](docs/verify-v2.md)
 
 ## Install the plugin
 
-1. Extract the downloaded plugin and copy to executable PATH. 
-  
+1. Extract the downloaded plugin and copy to executable PATH.
+
 NOTE:
 
 - While copying, the destination name must be `oc-ibm_pak` (On windows, name must be `oc-ibm_pak.exe`) and cannot be changed including the dash and the underscore. These special characters are used by the oc command to find and setup the plugin
@@ -90,7 +89,6 @@ tar -xvf oc-ibm_pak-windows-amd64.tar.gz
 Copy-Item oc-ibm_pak-windows-amd64 $HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe
 ```
 
-
 Verify that the installation was successful by issuing the below command
 
 ```bash
@@ -110,13 +108,13 @@ Starting with `v1.8.0`, the plug-in lays the foundation for eventual support for
 
 Users on macOS Catalina might be prompted that `oc-ibm_pak-darwin-amd64` is not a trusted application. There are two ways to get around this:
 
-- Open Finder, control-click  the application `oc-ibm_pak-darwin-amd64`, choose **Open** from the menu, and then click **Open** in the dialog that appears. Enter your admin name and password to open the app if promoted.
+- Open Finder, control-click the application `oc-ibm_pak-darwin-amd64`, choose **Open** from the menu, and then click **Open** in the dialog that appears. Enter your admin name and password to open the app if promoted.
 
 - Enable developer-mode for your terminal window, which will allow everything. Make sure you are OK with this approach:
-  -  Open Terminal, and enter:
-       ```console
-       ❯ spctl developer-mode enable-terminal 
-      ```
+  - Open Terminal, and enter:
+    ```console
+    ❯ spctl developer-mode enable-terminal
+    ```
   - Go to System Preferences -> Security & Privacy -> Privacy Tab -> Developer Tools -> Terminal : Enable
   - Restart all terminals
 
@@ -125,4 +123,3 @@ _See https://support.apple.com/en-ca/HT202491 for more information_
 ## Support
 
 To report an issue or get help please visit https://www.ibm.com/docs/en/cpfs?topic=support-opening-case
-
