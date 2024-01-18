@@ -274,7 +274,7 @@ Disconnected Mirroring Flags:
     AUTO_GENERATE (--dest-skip-tls --max-per-registry=6)
 
   To Final Registry:
-    AUTO_GENERATE (--dest-skip-tls --from=sequence_file.tar)
+    AUTO_GENERATE (--dest-skip-tls)
 
 Target catalog: ibm-catalog
 

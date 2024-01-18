@@ -3,7 +3,7 @@
 - [Generating mirror manifests with compressed registry paths](#generating-mirror-manifests-with-compressed-registry-paths)
   - [Compressing the target registry](#compressing-the-target-registry)
   - [Compressing the intermediate and final registries](#compressing-the-intermediate-and-final-registries)
-- [Sharding the image-content-source-policy.yaml file](#sharding-the-image-content-source-policyyaml-file)
+- [Sharding the image-digest-mirror-set.yaml and image-content-source-policy.yaml files](#sharding-the-image-digest-mirror-setyaml-and-image-content-source-policyyaml-files)
 
 # Generating mirror manifests with compressed registry paths
 
@@ -15,9 +15,9 @@ Compression is enabled using two flags:  `--max-components` and `--final-max-com
 
 For example, if the source repository path is `quay.io/org/subrepo/repo` and `--max-components 2` then it will be converted to `quay.io/org/subrepo-repo`.
 
-Registry path compression changes how the ImageContentSourcePolicy (ICSP) resources are created:
-- When disabled (the default), the `repositoryDigestMirrors` of the ICSP contains one entry for each of the first component path (also known as the "namespace"), for example: `icr.io/cpopen`.
-- When enabled, the `repositoryDigestMirrors` of the ICSP is expanded to one entry per repository (the full image path). Because this can produce a large number of entries, sharding is used to divide the ICSP into multiple resources.  Learn more here: [Sharding ICSP file](#sharding-the-image-content-source-policyyaml-file).
+Registry path compression changes how the ImageDigestMirrorSet (IDMS) and ImageContentSourcePolicy (ICSP) resources are created:
+- When disabled (the default), the `imageDigestMirrors` of the IDMS (or `repositoryDigestMirrors` of the ICSP) contains one entry for each of the first component path (also known as the "namespace"), for example: `icr.io/cpopen`.
+- When enabled, the `imageDigestMirrors` of the IDMS (or `repositoryDigestMirrors` of the ICSP) is expanded to one entry per repository (the full image path). Because this can produce a large number of entries, sharding is used to divide the IDMS (or ICSP) into multiple resources.  Learn more here: [Sharding IDMS and ICSP file](#sharding-the-image-digest-mirror-setyaml-and-image-content-source-policyyaml-files).
 
 > Note:  All of the examples in this document use an abbreviated image digest of (`@sha256:123...`) for readability).
 
@@ -208,22 +208,22 @@ images-mapping-from-filesystem.txt
 Changes for the above will be analogous to files generated for registry scenario, except for filesystem paths that will not be compressed.
 
 
-# Sharding the image-content-source-policy.yaml file
+# Sharding the image-digest-mirror-set.yaml and image-content-source-policy.yaml files
 
 Kubernetes resources have limits on the size of their content, so if you create a YAML that is too large, the resource won't be created when you apply the resource. To solve this problem, the resource is divided (sharded) into smaller sized resources and placed into a multi document YAML file (i.e., one file with multiple Kubernetes resources within it).
 
-ISCP sharding is only used for `image-content-source-policy.yaml` files created when compression is enabled, appending a `-<integer>` starting with 0 to each resource name.  Use the `--max-icsp-size` flag to override the maximum size of each ImageContentSourcePolicy resource.
+IDMS and ICSP sharding is only used for `image-digest-mirror-set.yaml` and `image-content-source-policy.yaml` files created when compression is enabled, appending a `-<integer>` starting with 0 to each resource name. Use the `--max-idms-size` flag to override the maximum size of each ImageDigestMirrorSet resource. For ImageContentSourcePolicy resource use  `--max-icsp-size` flag accordingly.
 
 Example. 
-1. The compressed `image-content-source-policy.yaml` with `--max-components 2` creates 1 shard:
+1. The compressed `image-digest-mirror-set.yaml` with `--max-components 2` creates 1 shard:
    
     ```
-    apiVersion: operator.openshift.io/v1alpha1
-    kind: ImageContentSourcePolicy
+    apiVersion: config.openshift.io/v1
+    kind: ImageDigestMirrorSet
     metadata:
       name: ibm-cloudpak-0
     spec:
-      repositoryDigestMirrors:
+      imageDigestMirrors:
       - mirrors:
         - registry.com/a/b-c-kubebuilder-kube-rbac-proxy
         source: gcr.io/kubebuilder/kube-rbac-proxy
@@ -238,15 +238,15 @@ Example.
         source: icr.io/cpopen/ibm-cloudpak-operator-bundle
     ```
 
-2. The compressed `image-content-source-policy.yaml` with `--max-components 2` and `max-icsp-size 400` creates 3 shards:
+2. The compressed `image-digest-mirror-set.yaml` with `--max-components 2` and `max-idms-size 400` creates 3 shards:
 
     ```
-    apiVersion: operator.openshift.io/v1alpha1
-    kind: ImageContentSourcePolicy
+    apiVersion: config.openshift.io/v1
+    kind: ImageDigestMirrorSet
     metadata:
       name: ibm-cloudpak-0
     spec:
-      repositoryDigestMirrors:
+      imageDigestMirrors:
       - mirrors:
         - registry.com/a/b-c-kubebuilder-kube-rbac-proxy
         source: gcr.io/kubebuilder/kube-rbac-proxy
@@ -254,22 +254,22 @@ Example.
         - registry.com/a/b-c-cpopen-ibm-cloudpak-catalog
         source: icr.io/cpopen/ibm-cloudpak-catalog
     ---
-    apiVersion: operator.openshift.io/v1alpha1
-    kind: ImageContentSourcePolicy
+    apiVersion: config.openshift.io/v1
+    kind: ImageDigestMirrorSet
     metadata:
       name: ibm-cloudpak-1
     spec:
-      repositoryDigestMirrors:
+      imageDigestMirrors:
       - mirrors:
         - registry.com/a/b-c-cpopen-ibm-cloudpak-operator
         source: icr.io/cpopen/ibm-cloudpak-operator
     ---
-    apiVersion: operator.openshift.io/v1alpha1
-    kind: ImageContentSourcePolicy
+    apiVersion: config.openshift.io/v1
+    kind: ImageDigestMirrorSet
     metadata:
       name: ibm-cloudpak-2
     spec:
-      repositoryDigestMirrors:
+      imageDigestMirrors:
       - mirrors:
         - registry.com/a/b-c-cpopen-ibm-cloudpak-operator-bundle
         source: icr.io/cpopen/ibm-cloudpak-operator-bundle
