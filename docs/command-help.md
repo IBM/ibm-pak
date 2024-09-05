@@ -335,18 +335,20 @@ oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <ca
 
 Flags:
       --dry-run                    If option provided, leave the merged FBC content in staging directory (optional)
+      --enable-restricted-scc      if provided, generates catalog sources with restricted securityContextConfig (optional)
       --filter string              comma separated list of values, which can either be a group name or architecture (default "")
       --final-max-components int   The maximum number of path components allowed in a final registry mapping (0: all paths used, 1: error - not allowed, 2 and more: paths compressed from right to left to honor # provided) (optional)
       --final-registry string      if the target registry is a filesystem (has a "file://" prefix), then this argument must be provided to generate proper ICSP and Catalog Sources,
                                    if the target registry is a registry server, then this argument can be provided optionally to enable mirroring to an intermediate registry followed by mirroring to a final registry specified by this argument (default "")
   -h, --help                       help for mirror-manifests
-      --insecure                   skip TLS/SSL verification (optional)
       --max-components int         The maximum number of path components allowed in a target registry mapping (0: all paths used, 1: error - not allowed, 2 and more: paths compressed from right to left to honor # provided) (optional)
       --max-icsp-size int          The maximum number of bytes for the generated ICSP yaml(s) when using --max-components. Defaults to 250000 (default 250000)
+      --max-idms-size int          The maximum number of bytes for the generated IDMS yaml(s) when using --max-components. Defaults to 250000 (default 250000)
       --version string             the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
 Global Flags:
+      --insecure          skip TLS/SSL verification (optional)
       --log_file string   If non-empty, use this log file
-  -v, --v Level           number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
+  -v, --v int             number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
 ```
 
 Example:
@@ -378,6 +380,9 @@ oc ibm-pak generate mirror-manifests ibm-my-cloudpak intermediate-registry.com -
 
 8) Generate mirror manifests for a target registry where path is compressed to --max-components value and ICSP is generated with sharding as per the --max-icsp-size value. (with v1.9.0 and later)
 oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --max-components 2 --max-icsp-size 10000
+
+9) Generate mirror manifests with restricted securityContextConfig in generated catalog sources (with v1.16.0 and later)
+oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --enable-restricted-scc
 ```
 
 Starting from `v1.9.0`, path compression can be used to install Cloud Paks into target registries with a restricted repository hierarchy . For more information on compression and sharding generated ICSP files, please refer here [documentation on compression and sharding registry paths](compression-sharding.md).
@@ -409,13 +414,22 @@ Usage:
 oc ibm-pak generate online-manifests <case name> --version <case version>
 
 Flags:
-    --version string   the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
-    -h, --help         help for online-manifests
+      --enable-restricted-scc   if provided, generates catalog sources with restricted securityContextConfig (optional)
+  -h, --help                    help for online-manifests
+      --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
+Global Flags:
+      --insecure          skip TLS/SSL verification (optional)
+      --log_file string   If non-empty, use this log file
+  -v, --v int             number for the log level verbosity [0 (normal), 1 (fine), 2 (finer) or 3 (finest)]
 ```
 
 Example:
 ```
+1) Generate online manifests
 oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0
+
+2) Generate online manifests with restricted securityContextConfig in generated catalog sources (with v1.16.0 and later)
+oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --enable-restricted-scc
 ```
 
 # oc ibm-pak launch
