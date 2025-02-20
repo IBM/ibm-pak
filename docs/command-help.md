@@ -334,6 +334,7 @@ Usage:
 oc ibm-pak generate mirror-manifests <case name> <target-registry> --version <case version> --filter <list of groups> [--final-registry <final-registry>] 
 
 Flags:
+      --authfile string            Auth file path to override default location to pull catalog from registry requiring authentication. Alternatively REGISTRY_AUTH_FILE env variable can be also specified (optional)
       --dry-run                    If option provided, leave the merged FBC content in staging directory (optional)
       --enable-restricted-scc      if provided, generates catalog sources with restricted securityContextConfig (optional)
       --filter string              comma separated list of values, which can either be a group name or architecture (default "")
