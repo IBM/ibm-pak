@@ -21,15 +21,15 @@
 Example using `curl`:
 
 ```
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-darwin-amd64.tar.gz -o oc-ibm_pak-darwin-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-darwin-amd64.tar.gz.sig -o oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 Example using `wget`:
 
 ```
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-darwin-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-darwin-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-darwin-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-darwin-amd64.tar.gz.sig
 ```
 
 ## Linux x86-architecture
@@ -37,15 +37,15 @@ wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-darwin-
 Example using `curl`:
 
 ```
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-amd64.tar.gz -o oc-ibm_pak-linux-amd64.tar.gz
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-amd64.tar.gz.sig -o oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 Example using `wget`:
 
 ```
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-amd64.tar.gz
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-amd64.tar.gz.sig
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-amd64.tar.gz
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-amd64.tar.gz.sig
 ```
 
 ## Linux ppc64le-architecture
@@ -53,15 +53,15 @@ wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-a
 Example using `curl`:
 
 ```
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-ppc64le.tar.gz -o oc-ibm_pak-linux-ppc64le.tar.gz
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-ppc64le.tar.gz.sig -o oc-ibm_pak-linux-ppc64le.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-ppc64le.tar.gz -o oc-ibm_pak-linux-ppc64le.tar.gz
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-ppc64le.tar.gz.sig -o oc-ibm_pak-linux-ppc64le.tar.gz.sig
 ```
 
 Example using `wget`:
 
 ```
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-ppc64le.tar.gz
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-ppc64le.tar.gz.sig
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-ppc64le.tar.gz
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-ppc64le.tar.gz.sig
 ```
 
 ## Linux s390x-architecture
@@ -69,15 +69,15 @@ wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-p
 Example using `curl`:
 
 ```
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-s390x.tar.gz -o oc-ibm_pak-linux-s390x.tar.gz
-curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-s390x.tar.gz.sig -o oc-ibm_pak-linux-s390x.tar.gz.sig
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-s390x.tar.gz -o oc-ibm_pak-linux-s390x.tar.gz
+curl -L https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-s390x.tar.gz.sig -o oc-ibm_pak-linux-s390x.tar.gz.sig
 ```
 
 Example using `wget`:
 
 ```
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-s390x.tar.gz
-wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-s390x.tar.gz.sig
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-s390x.tar.gz
+wget https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-linux-s390x.tar.gz.sig
 ```
 
 ## Windows
@@ -85,8 +85,8 @@ wget https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-linux-s
 Example (from PowerShell) using `curl`:
 
 ```
-curl https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-windows-amd64.tar.gz -o oc-ibm_pak-windows-amd64.tar.gz
-curl https://github.com/IBM/ibm-pak/releases/download/v1.18.0/oc-ibm_pak-windows-amd64.tar.gz.sig -o oc-ibm_pak-windows-amd64.tar.gz.sig
+curl https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-windows-amd64.tar.gz -o oc-ibm_pak-windows-amd64.tar.gz
+curl https://github.com/IBM/ibm-pak/releases/download/v1.18.1/oc-ibm_pak-windows-amd64.tar.gz.sig -o oc-ibm_pak-windows-amd64.tar.gz.sig
 ```
 
 # Download public keys for ibm-pak versions less than v1.5.0
