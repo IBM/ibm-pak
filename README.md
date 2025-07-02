@@ -17,16 +17,16 @@
 
 # Overview
 
-This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks via its github releases. The plugin streamlines the deployment of IBM CloudPaks in a disconnected environment which was done earlier using [cloudctl](https://github.com/IBM/cloud-pak-cli).
+This repository provides the IBM Catalog Management Plug-in for IBM Cloud Paks via its github releases. The plugin streamlines the deployment of IBM Cloud Paks in a disconnected environment which was done earlier using [`cloudctl`](https://github.com/IBM/cloud-pak-cli).
 
 ## Download and verify software
 
 There are two ways to obtain the plugin
 
-- [Github Release](#download-from-github-release)
+- [GitHub Release](#download-from-github-release)
 - [Container image](#download-from-ibm-container-registry)
 
-### Download from github release
+### Download from GitHub release
 
 1. Download the gzipped tar archive for your OS from the assets in [releases](https://github.com/IBM/ibm-pak/releases)
 2. Download the corresponding `.sig` file for verification purposes
@@ -37,20 +37,20 @@ There are two ways to obtain the plugin
 
 The plugin is also provided in a container image `cp.icr.io/cpopen/cpfs/ibm-pak:TAG` where `TAG` should be replaced with the corresponding plugin version, for example `cp.icr.io/cpopen/cpfs/ibm-pak:v1.18.1` will have `v1.18.1` of the plugin.
 
-The following command will create a container and copy the plug-ins for all the supported platforms in a directory, `plugin-dir`. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The `plugin-dir` will have all the binaries and other artifacts you find in a Github release and repo at [IBM/ibm-pak](https://github.com/IBM/ibm-pak). For example,
+The following command will create a container and copy the plug-ins for all the supported platforms in a directory, `plugin-dir`. You can specify any directory name and it will be created while copying. After copying, it will delete the temporary container. The `plugin-dir` will have all the binaries and other artifacts you find in a GitHub release and repo at [IBM/ibm-pak](https://github.com/IBM/ibm-pak). For example,
 
-1. If you use docker:
+1. If you use `docker`:
 
-```
+```bash
 id=$(docker create cp.icr.io/cpopen/cpfs/ibm-pak:v1.18.1 - )
 docker cp $id:/ibm-pak-plugin plugin-dir
 docker rm -v $id
 cd plugin-dir
 ```
 
-2. If you podman:
+1. If you use `podman`:
 
-```
+```bash
 id=$(podman create cp.icr.io/cpopen/cpfs/ibm-pak:v1.18.1 - )
 podman cp $id:/ibm-pak-plugin plugin-dir
 podman rm -v $id
@@ -65,15 +65,19 @@ cd plugin-dir
 
 ## Install the plugin
 
-1. Extract the downloaded plugin and copy to executable PATH.
+1. Extract the downloaded plugin from the archive.
+2. Rename the extracted executable file to `oc-ibm_pak` (On Windows, name must be `oc-ibm_pak.exe`).
+3. Move the `oc-ibm_pak` executable to a folder in your shell's `PATH` env var.
 
 NOTE:
 
-- While copying, the destination name must be `oc-ibm_pak` (On windows, name must be `oc-ibm_pak.exe`) and cannot be changed including the dash and the underscore. These special characters are used by the oc command to find and setup the plugin
-- On Mac before copying oc-ibm_pak-darwin-amd64 to `/usr/local/bin/oc-ibm_pak` or any directory in your PATH, refer to [For macOS Catalina users](#for-macos-catalina-users)
+- While copying, the destination name must be `oc-ibm_pak` (On Windows, name must be `oc-ibm_pak.exe`) and cannot be changed including the dash and the underscore. These special characters are used by the `oc` command to [find and setup the plugin](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc#cli-extend-plugins).
+- On Mac before copying `oc-ibm_pak-darwin-amd64` to `/usr/local/bin/oc-ibm_pak` or any directory in your PATH, refer to [For macOS Catalina users](#for-macos-catalina-users)
 - If `/usr/local/bin` is not accessible then place it in an accessible folder and put that folder in PATH
-- On windows, copy `oc-ibm_pak-windows-amd64` to `$HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe` or any directory and add this path to PATH environment variable.
-- See accompanying LICENSE file obtained on extracting for the allowed usage.
+- On Windows, copy `oc-ibm_pak-windows-amd64` to `$HOME\AppData\Local\Microsoft\WindowsApps\oc-ibm_pak.exe` or any directory and add this path to PATH environment variable.
+- See accompanying [`LICENSE`](LICENSE) file obtained on extracting for the allowed usage.
+- Check that the plugin is found in the `PATH`, e.g. by running `which oc-ibm_pak` on Linux or macOS, or `where oc-ibm_pak` on Windows.
+- Check that the plugin is installed correctly by running `oc plugin list`.
 
 For example on Mac,
 
@@ -99,7 +103,7 @@ Information about plugin's available commands is described [in the doc](docs/com
 
 ## Installing your IBM Cloud Pak by mirroring Cloud Pak images to a private container registry
 
-Steps are described [here](https://www.ibm.com/docs/en/cloud-paks/1.0?topic=plugin-installing-by-connected-disconnected-mirroring).
+Steps are described in [IBM Cloud Paks documentation](https://www.ibm.com/docs/en/cloud-paks/1.0?topic=plugin-installing-by-connected-disconnected-mirroring).
 For more information about available CASE names and versions, see [IBM: Product CASE to Application Version](https://ibm.github.io/cloud-pak/).
 
 Starting with `v1.8.0`, the plug-in lays the foundation for eventual support for catalog-based mirroring. Information about catalog-based mirroring is described [in the doc](docs/catalog-mirroring.md). At this time, catalog-based mirroring and `oc-mirror` tool usage is a **_Tech Preview_** feature, which may not be supported by all products.
@@ -112,14 +116,28 @@ Users on macOS Catalina might be prompted that `oc-ibm_pak-darwin-amd64` is not 
 
 - Enable developer-mode for your terminal window, which will allow everything. Make sure you are OK with this approach:
   - Open Terminal, and enter:
-    ```console
-    ❯ spctl developer-mode enable-terminal
+
+    ```bash
+    spctl developer-mode enable-terminal
     ```
-  - Go to System Preferences -> Security & Privacy -> Privacy Tab -> Developer Tools -> Terminal : Enable
+
+  - Go to System Preferences &rarr; Security & Privacy &rarr; Privacy Tab &rarr; Developer Tools &rarr; Terminal : Enable
   - Restart all terminals
 
-_See https://support.apple.com/en-ca/HT202491 for more information_
+_See <https://support.apple.com/en-ca/HT202491> for more information_
+
+## Temporary folder
+
+The plugin will download files to a temporary folder.
+It uses the following folder locations, first non empty value will be used:
+
+- `$TMPDIR`
+- `$TEMP`
+- `$TMP`
+- `/tmp`, `C:\Windows\Temp` on Windows.
+
+If, for some reason there is not enough space in the temporary folder, you can set the `TMPDIR` environment variable to a different location with more space.
 
 ## Support
 
-To report an issue or get help please visit https://www.ibm.com/docs/en/cpfs?topic=support-opening-case
+To report an issue or get help please visit <https://www.ibm.com/docs/en/cpfs?topic=support-opening-case>
