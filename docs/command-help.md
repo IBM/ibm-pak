@@ -344,18 +344,18 @@ Disconnected Mirroring Flags:
 
 oc mirror: 
 ---------
-Local storage config:
+Local storage config (for v1 only):
   Path: /root/.ibm-pak/oc-mirror-storage
 
 Connected Mirroring Flags:
-  AUTO_GENERATE (--dest-skip-tls --max-per-registry=6)
+  AUTO_GENERATE (v1 : --dest-skip-tls --max-per-registry=6 , v2 : --dest-tls-verify=false)
 
 Disconnected Mirroring Flags:
   To Target FileSystem or Registry:
-    AUTO_GENERATE (--dest-skip-tls --max-per-registry=6)
+    AUTO_GENERATE (v1 : --dest-skip-tls --max-per-registry=6 , v2 : )
 
   To Final Registry:
-    AUTO_GENERATE (--dest-skip-tls)
+    AUTO_GENERATE (v1 : --dest-skip-tls , v2 : --dest-tls-verify=false)
 
 Target catalog: ibm-catalog
 
@@ -516,6 +516,11 @@ Example:
 - Generate mirror manifests for `helm` install method (Supported with ibm-pak version `v1.18.0` or higher)
   ```
   oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --install-method helm
+  ```
+
+- Generate mirror manifests for `oc-mirror v2` (Supported with ibm-pak version `v1.19.0` or higher)
+  ```
+  oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --oc-mirror-plugin v2
   ```  
 
 # ibm-pak describe
