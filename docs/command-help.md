@@ -444,6 +444,7 @@ Flags:
       --max-components int         The maximum number of path components allowed in a target registry mapping (0: all paths used, 1: error - not allowed, 2 and more: paths compressed from right to left to honor # provided) (optional)
       --max-icsp-size int          The maximum number of bytes for the generated ICSP yaml(s) when using --max-components. Defaults to 250000 (default 250000)
       --max-idms-size int          The maximum number of bytes for the generated IDMS yaml(s) when using --max-components. Defaults to 250000 (default 250000)
+      --oc-mirror-plugin string    oc-mirror plugin to generate manifests as per plugin type. One of: [v1, v2] (default "v1")
       --version string             the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
 ```
 
