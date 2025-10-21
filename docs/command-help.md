@@ -386,6 +386,7 @@ Flags:
                                    
   -h, --help                       help for get
       --install-method string      Install method to generate manifests as per install type. One of: [OLM, helm] (default "OLM")
+      --resolve-unique-dependencies   if provided, check for duplicate versions and resolve exact one suitable version of sub-CASE (optional)
       --skip-dependencies          skip downloading dependencies (optional)
       --skip-verify                if provided, skips the certification verification (optional)
       --version string             the "semantic version range" specifying the CASE to download, e.g. '2.0.0' or '>=1.0.0, <=3.0.0' (optional - assumes latest if not provided)
@@ -422,6 +423,11 @@ Example:
 - Download a CASE for `helm` install method (Supported with ibm-pak version `v1.18.0` or higher)
   ```
   oc ibm-pak get ibm-my-cloudpak --version 1.0.0 --install-method helm
+  ```
+
+- Download a CASE with unique sub-CASE version (most suitable) when multiple versions of sub-CASE found (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak get ibm-my-cloudpak --version 1.0.0 --resolve-unique-dependencies
   ```
 
 # ibm-pak generate mirror-manifests
@@ -637,10 +643,14 @@ Usage:
 oc ibm-pak list
 
 Flags:
-      --case-name string   print the list of all CASE images (separately printed for each version) matching the given case name
-      --downloaded         print the list of downloaded CASE images available locally
-  -h, --help               help for list
-  -o, --output string      Specify output format as json, yaml or ""
+      --case-name string      print the list of all CASE images (separately printed for each version) matching the given case name
+      --case-version string   list helm charts of given CASE
+      --chart-name string     list helm charts versions of given chart
+      --chart-repo string     Chart repository
+      --charts                list helm charts available in provided repository or downloaded locally
+      --downloaded            print the list of downloaded CASE images available locally
+  -h, --help                  help for list
+  -o, --output string         Specify output format as json, yaml or ""
 ```
 
 Example:
@@ -685,6 +695,42 @@ Example:
   ```
   oc ibm-pak list --case-name ibm-my-cloudpak --downloaded -o yaml
   ```
+
+- List all Charts available in the provided chart repository (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --chart-repo https://github.com/IBM/charts/raw/master/repo/ibm-helm/
+  ```
+
+- List all Charts in json output (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --chart-repo https://github.com/IBM/charts/raw/master/repo/ibm-helm/ -o json
+  ```
+
+- List all Charts in yaml output (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --chart-repo https://github.com/IBM/charts/raw/master/repo/ibm-helm/ -o yaml
+  ```
+
+- List all versions of Chart for a specific chart name (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --chart-name ibm-appconnect-operator --chart-repo https://github.com/IBM/charts/raw/master/repo/ibm-helm/
+  ```
+
+- List all downloaded Charts from ibm-pak workspace (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --downloaded
+  ```
+
+- List all downloaded Charts for a CASE (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --case-name ibm-cert-manager --downloaded
+  ```
+
+- List all downloaded Charts for a CASE for specific version (Supported with ibm-pak version `v1.20.0` or higher)
+  ```
+  oc ibm-pak list --charts --case-name ibm-cert-manager --case-version 4.2.15 --downloaded
+  ```
+  
 
 # ibm-pak verify
 Verify the integrity of downloaded CASEs
