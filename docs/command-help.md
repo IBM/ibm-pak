@@ -283,14 +283,14 @@ Usage:
 oc ibm-pak config catalog-builder --base-image myregistry.com/images/base-image:1.0
 
 Flags:
-      --base-image string   Set the base image for fbc catalog (Setting this flag as AUTO_GENERATE will make the plugin use icr.io/cpopen/ibm-operator-catalog:fbc-base-latest) (default "AUTO_GENERATE")
+      --base-image string   Set the base image for fbc catalog (Setting this flag as AUTO_GENERATE will make the plugin use icr.io/cpopen/ibm-operator-catalog-base:latest) (default "AUTO_GENERATE")
   -h, --help                help for catalog-builder
 ```
 
 Example:
 - Configure a catalog base image used during curation
   ```
-  oc ibm-pak config catalog-builder --base-image icr.io/cpopen/ibm-operator-catalog:fbc-base-latest
+  oc ibm-pak config catalog-builder --base-image icr.io/cpopen/ibm-operator-catalog-base:latest
   ```
 
 - Reset catalog base image to AUTO_GENERATE
@@ -366,7 +366,7 @@ Enabled tool: oc image mirror
 
 Catalog Builder Config
 
-Base image: AUTO_GENERATE (icr.io/cpopen/ibm-operator-catalog:fbc-base-latest)
+Base image: AUTO_GENERATE (icr.io/cpopen/ibm-operator-catalog-base:latest)
 
 ```
 
