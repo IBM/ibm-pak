@@ -384,6 +384,7 @@ Flags:
                                    http://host:port/path/to/file/component-set-config.yaml
                                    https://host:port/path/to/file/component-set-config.yaml
                                    
+      --exclude-dependencies string   List of specific dependencies to skip (comma-separated). E.g. CASE1 or CASE1,CASE2 or CASE1:VERSION1 or CASE1:VERSION1,CASE2:VERSION1 or CASE1,CASE2:VERSION1 (optional)
   -h, --help                       help for get
       --install-method string      Install method to generate manifests as per install type. One of: [OLM, helm] (default "OLM")
       --resolve-unique-dependencies   if provided, check for duplicate versions and resolve exact one suitable version of sub-CASE (optional)
@@ -399,7 +400,7 @@ Environment Variables:
   HTTP_PROXY or http_proxy    the URL of a HTTP proxy (e.g. http://[user]:[pass]@[proxy_ip]:[proxy_port]) (default "")
 ```
 
-Example: 
+Example:
 - Download a CASE from a repository like github, oci-compliant registry
   ```
   oc ibm-pak get ibm-my-cloudpak --version 1.0.0
@@ -413,6 +414,16 @@ Example:
 - Download a CASE without resolving dependencies
   ```
   oc ibm-pak get ibm-my-cloudpak --version 1.0.0 --skip-dependencies
+  ```
+
+- Download a CASE while excluding specific dependencies (Supported with ibm-pak version `v1.24.0` or higher)
+  ```
+  oc ibm-pak get ibm-my-cloudpak --version 1.0.0 --exclude-dependencies CASE1,CASE2
+  ```
+
+- Download a CASE while excluding specific dependency versions (Supported with ibm-pak version `v1.24.0` or higher)
+  ```
+  oc ibm-pak get ibm-my-cloudpak --version 1.0.0 --exclude-dependencies CASE1:4.2.0,CASE2:1.20.0
   ```
   
 - Download a CASE for `OLM` install method (Supported with ibm-pak version `v1.18.0` or higher)
