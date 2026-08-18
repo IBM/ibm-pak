@@ -457,6 +457,7 @@ Flags:
       --final-registry string      if the target registry is a filesystem (has a "file://" prefix), then this argument must be provided to generate proper ICSP and Catalog Sources,
                                    if the target registry is a registry server, then this argument can be provided optionally to enable mirroring to an intermediate registry followed by mirroring to a final registry specified by this argument (default "")
   -h, --help                       help for mirror-manifests
+      --include-artifacts          if provided, includes CASE and Helm chart (for --install-method helm) OCI artifact images in the generated mirror manifest (optional)
       --install-method string      Install method to generate manifests as per install type. One of: [OLM, helm] (default "OLM")
       --max-components int         The maximum number of path components allowed in a target registry mapping (0: all paths used, 1: error - not allowed, 2 and more: paths compressed from right to left to honor # provided) (optional)
       --max-icsp-size int          The maximum number of bytes for the generated ICSP yaml(s) when using --max-components. Defaults to 250000 (default 250000)
@@ -539,7 +540,17 @@ Example:
 - Generate mirror manifests for `oc-mirror v2` (Supported with ibm-pak version `v1.19.0` or higher)
   ```
   oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --oc-mirror-plugin v2
-  ```  
+  ```
+
+- Generate mirror manifests including CASE and Helm chart OCI artifact images (Supported with ibm-pak version `v1.25.0` or higher)
+  ```
+  oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --include-artifacts
+  ```
+
+- Generate mirror manifests including CASE and Helm chart OCI artifact images for `helm` install method (Supported with ibm-pak version `v1.25.0` or higher)
+  ```
+  oc ibm-pak generate mirror-manifests ibm-my-cloudpak myregistry.com --version 1.0.0 --install-method helm --include-artifacts
+  ```
 
 # ibm-pak describe
 Describe command prints image lists, dependencies, registries and other information for this CASE
@@ -575,6 +586,7 @@ Flags:
   -h, --help                    help for online-manifests
       --include-artifacts       if provided, includes CASE and Helm chart (for --install-method helm) OCI artifact images in the generated online manifest (optional)
       --install-method string   Install method to generate manifests as per install type. One of: [OLM, helm] (default "OLM")
+      --oc-mirror-plugin string oc-mirror plugin to generate manifests as per plugin type. One of: [v1, v2] (default "v1")
       --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
 ```
 
@@ -592,12 +604,12 @@ Example:
 - Generate online manifests for `OLM` install method (Supported with ibm-pak version `v1.18.0` or higher)
   ```
   oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --install-method OLM
-  ``` 
+  ```
 
 - Generate online manifests for `helm` install method (Supported with ibm-pak version `v1.18.0` or higher)
   ```
   oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --install-method helm
-  ```  
+  ```
 
 - Generate online manifests for `oc-mirror v2` (Supported with ibm-pak version `v1.19.0` or higher)
   ```
