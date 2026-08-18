@@ -573,6 +573,7 @@ Flags:
       --authfile string         Auth file path to override default location to pull catalog from registry requiring authentication (optional)
       --enable-restricted-scc   if provided, generates catalog sources with restricted securityContextConfig (optional)
   -h, --help                    help for online-manifests
+      --include-artifacts       if provided, includes CASE and Helm chart (for --install-method helm) OCI artifact images in the generated online manifest (optional)
       --install-method string   Install method to generate manifests as per install type. One of: [OLM, helm] (default "OLM")
       --version string          the exact "case version" already downloaded by "oc ibm-pak get" (optional - assumes latest if not provided)
 ```
@@ -597,6 +598,21 @@ Example:
   ```
   oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --install-method helm
   ```  
+
+- Generate online manifests for `oc-mirror v2` (Supported with ibm-pak version `v1.19.0` or higher)
+  ```
+  oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --oc-mirror-plugin v2
+  ```
+
+- Generate online manifests including CASE OCI artifact images in `images.txt` (Supported with ibm-pak version `v1.25.0` or higher)
+  ```
+  oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --include-artifacts
+  ```
+
+- Generate online manifests including CASE and Helm chart OCI artifact images in `images.txt` for `helm` install method (Supported with ibm-pak version `v1.25.0` or higher)
+  ```
+  oc ibm-pak generate online-manifests ibm-my-cloudpak --version 1.0.0 --install-method helm --include-artifacts
+  ```
 
 # ibm-pak launch
 Launch a CASE into the targeted cluster.
